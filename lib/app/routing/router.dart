@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/app/routing/routing.dart';
+import 'package:flutter_template/features/post/post.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import 'routes.dart';
-
 GoRouter router() => GoRouter(
-  initialLocation: Routes.home,
-  debugLogDiagnostics: true,
+  initialLocation: Routes.postList,
   redirect: _redirect,
+  observers: [GoRouterObserver()],
   routes: [
     GoRoute(
-      path: Routes.login,
+      path: Routes.postList,
       builder: (context, state) {
-        return SizedBox.shrink();
-      },
-    ),
-    GoRoute(
-      path: Routes.home,
-      builder: (context, state) {
-        return SizedBox.shrink();
+        final viewModel = GetIt.I<PostListViewModel>();
+        return PostListView(viewModel: viewModel);
       },
     ),
   ],

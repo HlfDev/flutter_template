@@ -94,11 +94,11 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// No description provided for @alcasys.
+  /// No description provided for @title.
   ///
   /// In en, this message translates to:
-  /// **'Alcasys'**
-  String get alcasys;
+  /// **'template'**
+  String get title;
 }
 
 class _AppLocalizationsDelegate
