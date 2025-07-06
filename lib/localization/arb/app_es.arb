@@ -1,0 +1,22 @@
+{
+  "title": "Publicación",
+  "searchPosts": "Buscar publicaciones",
+  "createPost": "Crear Publicación",
+  "updatePost": "Actualizar Publicación",
+  "deletePost": "Eliminar Publicación",
+  "titleLabel": "Título",
+  "bodyLabel": "Cuerpo",
+  "titleRequired": "Por favor ingresa un título",
+  "bodyRequired": "Por favor ingresa un cuerpo",
+  "cancelButton": "Cancelar",
+  "createButton": "Crear",
+  "updateButton": "Actualizar",
+  "deleteButton": "Eliminar",
+  "deletePostConfirmation": "¿Estás seguro de que quieres eliminar esta publicación?",
+  "postCreatedSuccess": "¡Publicación creada exitosamente!",
+  "postCreatedFailure": "Error al crear la publicación: {error}",
+  "postUpdatedSuccess": "¡Publicación actualizada exitosamente!",
+  "postUpdatedFailure": "Error al actualizar la publicación: {error}",
+  "postDeletedSuccess": "¡Publicación eliminada exitosamente!",
+  "postDeletedFailure": "Error al eliminar la publicación: {error}"
+}

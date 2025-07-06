@@ -47,6 +47,7 @@ dev_dependencies:
   freezed: ^3.0.6
   json_serializable: ^6.9.0
   widgetbook_generator: ^3.13.0
+  flutter_gen: ^5.3.1
 
 flutter:
   generate: true

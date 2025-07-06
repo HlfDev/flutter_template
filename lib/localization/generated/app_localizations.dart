@@ -6,6 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,13 +94,131 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('es'),
+    Locale('pt'),
+  ];
 
-  /// No description provided for @title.
+  /// The title of the application
   ///
   /// In en, this message translates to:
-  /// **'template'**
+  /// **'Posts'**
   String get title;
+
+  /// No description provided for @searchPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search posts'**
+  String get searchPosts;
+
+  /// No description provided for @createPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Post'**
+  String get createPost;
+
+  /// No description provided for @updatePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Post'**
+  String get updatePost;
+
+  /// No description provided for @deletePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Post'**
+  String get deletePost;
+
+  /// No description provided for @titleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get titleLabel;
+
+  /// No description provided for @bodyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Body'**
+  String get bodyLabel;
+
+  /// No description provided for @titleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a title'**
+  String get titleRequired;
+
+  /// No description provided for @bodyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a body'**
+  String get bodyRequired;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelButton;
+
+  /// No description provided for @createButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createButton;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateButton;
+
+  /// No description provided for @deleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteButton;
+
+  /// No description provided for @deletePostConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this post?'**
+  String get deletePostConfirmation;
+
+  /// No description provided for @postCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Post created successfully!'**
+  String get postCreatedSuccess;
+
+  /// No description provided for @postCreatedFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create post: {error}'**
+  String postCreatedFailure(Object error);
+
+  /// No description provided for @postUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Post updated successfully!'**
+  String get postUpdatedSuccess;
+
+  /// No description provided for @postUpdatedFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update post: {error}'**
+  String postUpdatedFailure(Object error);
+
+  /// No description provided for @postDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Post deleted successfully!'**
+  String get postDeletedSuccess;
+
+  /// No description provided for @postDeletedFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete post: {error}'**
+  String postDeletedFailure(Object error);
 }
 
 class _AppLocalizationsDelegate
@@ -112,7 +232,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'es', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -123,6 +243,10 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'pt':
+      return AppLocalizationsPt();
   }
 
   throw FlutterError(

@@ -1,43 +1,75 @@
-import 'package:flutter_template/features/post/post.dart';
-import 'package:flutter_template/design_system/design_system.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/design_system/design_system.dart';
+import 'package:flutter_template/design_system/tokens/app_sizes.dart';
+import 'package:flutter_template/features/post/post.dart';
 
 class PostListList extends StatelessWidget {
   final List<Post> posts;
-  const PostListList({super.key, required this.posts});
+  final Function(Post) onEdit;
+  final Function(String) onDelete;
+
+  const PostListList({
+    super.key,
+    required this.posts,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Search for your post',
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(kBorderRadius24),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: AppColors.lightGrey25,
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(child: SizedBox(height: kSize24)),
         SliverList.separated(
           itemCount: posts.length,
           separatorBuilder: (BuildContext context, int index) {
-            return const Divider();
+            return Divider(color: Theme.of(context).colorScheme.outlineVariant);
           },
           itemBuilder: (context, index) {
             final post = posts[index];
-            return ListTile(
-              onTap: () {},
-              leading: Icon(Icons.bookmark, size: kSize32),
-              title: Text(post.title),
-              subtitle: Text(post.body),
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: kSize24),
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: kPadding8),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(kBorderRadius8),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(kPadding16),
+                onTap: () {},
+                leading: Icon(
+                  Icons.bookmark,
+                  size: kSize32,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                title: Text(
+                  post.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                subtitle: Text(
+                  post.body,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        size: kSize24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () => onEdit(post),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        size: kSize24,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      onPressed: () => onDelete(post.id),
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         ),

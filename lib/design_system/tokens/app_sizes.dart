@@ -15,3 +15,4 @@ const double kSize124 = 124.0;
 
 const double kBorderRadius24 = 24;
 const double kBorderRadius = 100;
+const double kBorderRadius8 = 8.0;

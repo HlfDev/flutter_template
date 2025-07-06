@@ -22,4 +22,47 @@ class PostApi {
       return Result.error(Exception(e));
     }
   }
+
+  Future<Result<Post>> createPost(Post post) async {
+    try {
+      final response = await _httpClient.post('/posts', post.toJson());
+
+      if (response.statusCode != HttpStatus.created) throw Exception();
+
+      final createdPost = Post.fromJson(response.data);
+
+      return Result.ok(createdPost);
+    } catch (e) {
+      return Result.error(Exception(e));
+    }
+  }
+
+  Future<Result<Post>> updatePost(Post post) async {
+    try {
+      final response = await _httpClient.put(
+        '/posts/${post.id}',
+        post.toJson(),
+      );
+
+      if (response.statusCode != HttpStatus.ok) throw Exception();
+
+      final updatedPost = Post.fromJson(response.data);
+
+      return Result.ok(updatedPost);
+    } catch (e) {
+      return Result.error(Exception(e));
+    }
+  }
+
+  Future<Result<void>> deletePost(String id) async {
+    try {
+      final response = await _httpClient.delete('/posts/$id');
+
+      if (response.statusCode != HttpStatus.ok) throw Exception();
+
+      return const Result.ok(null);
+    } catch (e) {
+      return Result.error(Exception(e));
+    }
+  }
 }

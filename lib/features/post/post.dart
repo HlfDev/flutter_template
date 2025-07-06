@@ -7,3 +7,6 @@ export './presentation/widgets/post_list_empty.dart';
 export './presentation/widgets/post_list_list.dart';
 export './presentation/widgets/post_list_retry.dart';
 export './presentation/widgets/post_list_shimmer.dart';
+export 'presentation/widgets/modal/create_post_modal.dart';
+export 'presentation/widgets/modal/delete_post_modal.dart';
+export 'presentation/widgets/modal/update_post_modal.dart';

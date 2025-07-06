@@ -6,7 +6,13 @@ class DioHttpClient implements HttpClient {
 
   DioHttpClient({required String baseUrl}) {
     _dio = Dio(
-      BaseOptions(baseUrl: baseUrl, headers: {'Accept': 'application/json'}),
+      BaseOptions(
+        baseUrl: baseUrl,
+        headers: {'Accept': 'application/json'},
+        connectTimeout: const Duration(milliseconds: 5000),
+        receiveTimeout: const Duration(milliseconds: 5000),
+        sendTimeout: const Duration(milliseconds: 5000),
+      ),
     );
     _dio.interceptors.add(HttpLoggerInterceptor());
   }
