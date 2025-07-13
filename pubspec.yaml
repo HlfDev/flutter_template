@@ -51,6 +51,9 @@ dev_dependencies:
   widgetbook_generator: ^3.13.0
   flutter_gen: ^5.3.1
   bloc_test: ^10.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
+
 
 flutter:
   generate: true
@@ -60,3 +63,9 @@ flutter:
 
 flutter_intl:
   enabled: true
+
+flutter_native_splash:
+  color: "#4285F4"
+
+  android_12:
+    color: "#4285F4"
