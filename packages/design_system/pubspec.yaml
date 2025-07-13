@@ -1,0 +1,40 @@
+name: design_system
+description: "Design system package with reusable UI components and design tokens"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Local packages
+  core:
+    path: ../core
+
+  # UI Components
+  shimmer: ^3.0.0
+  cached_network_image: ^3.4.1
+  flutter_svg: ^2.0.16
+  google_fonts: ^6.2.1
+
+  # Widgetbook
+  widgetbook: ^3.14.3
+  widgetbook_annotation: ^3.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  widgetbook_generator: ^3.13.0
+  build_runner: ^2.4.14
+  mocktail_image_network: ^1.2.0
+
+flutter:
+  uses-material-design: true
