@@ -8,8 +8,8 @@ A production-ready Flutter project template built with multi-package workspace a
 ## 🌟 Features
 
 ### Architecture & Organization
-- **Multi-Package Workspace:** Organized into `core`, `design_system`, and `feature_post` packages for clear separation of concerns
-- **Clean Architecture:** Implements layered architecture with data, domain, and presentation layers
+- **Multi-Package Workspace:** Organized into `app`, `core`, `design_system`, `localization`, and `post` packages for clear separation of concerns
+- **Simple Architecture:** Implements layered architecture with data and presentation layers
 - **State Management:** BLoC pattern with `flutter_bloc` for reactive state management
 - **Dependency Injection:** Service locator pattern using `get_it`
 
@@ -125,7 +125,7 @@ flutter build apk --flavor production --dart-define=ENVIRONMENT=production --rel
 
 ```
 flutter_template/
-├── lib/main.dart                    # Entry point - calls CoreApp.main()
+├── lib/main.dart                    # Entry point - calls AppBootstrap.main()
 ├── pubspec.yaml                     # Workspace root configuration
 ├── analysis_options.yaml            # Shared linting rules
 ├── scripts/                         # Development and build scripts
@@ -135,11 +135,19 @@ flutter_template/
 ├── assets/
 │   └── icon/flavors/               # Flavor-specific app icons
 └── packages/
-    ├── core/                        # Core functionality package
+    ├── app/                         # App initialization, routing, and service locator
     │   ├── lib/
-    │   │   ├── app/                 # App initialization & configuration
-    │   │   ├── core/                # Core utilities (HTTP, logging, helpers)
-    │   │   ├── localization/        # i18n support
+    │   │   ├── routing/             # GoRouter configuration and routes
+    │   │   ├── service_locator/     # GetIt dependency injection
+    │   │   └── app.dart             # Main package export
+    │   └── pubspec.yaml
+    ├── core/                        # Core utilities, networking, and configuration
+    │   ├── lib/
+    │   │   ├── config/              # Environment and app configuration
+    │   │   ├── helpers/             # Result pattern, Command pattern
+    │   │   ├── http/                # Dio HTTP client & interceptors
+    │   │   ├── observers/           # BLoC & Router observers
+    │   │   ├── utils/               # AppLogger and utilities
     │   │   └── core.dart            # Main package export
     │   └── pubspec.yaml
     ├── design_system/               # UI components & design tokens
@@ -149,11 +157,17 @@ flutter_template/
     │   │   ├── widgetbook/          # Component development environment
     │   │   └── design_system.dart   # Main package export
     │   └── pubspec.yaml
-    └── feature_post/                # Post feature implementation
+    ├── localization/               # Internationalization and localization
+    │   ├── lib/
+    │   │   ├── arb/                 # Translation files
+    │   │   ├── generated/           # Generated localization code
+    │   │   └── localization.dart    # Main package export
+    │   └── pubspec.yaml
+    └── post/                        # Post feature implementation
         ├── lib/
         │   ├── data/                # Data layer (APIs, models, repositories)
         │   ├── presentation/        # Presentation layer (BLoC, views, widgets)
-        │   └── feature_post.dart    # Main package export
+        │   └── post.dart            # Main package export
         └── pubspec.yaml
 ```
 
@@ -165,7 +179,7 @@ flutter test
 
 # Run tests for specific package
 cd packages/core && flutter test
-cd packages/feature_post && flutter test
+cd packages/post && flutter test
 
 # Run with coverage
 flutter test --coverage
@@ -215,9 +229,9 @@ The design system is organized in a separate package with Widgetbook integration
 
 The project supports multiple languages with centralized translation management:
 
-- Translation files: `packages/core/lib/localization/arb/`
+- Translation files: `packages/localization/lib/arb/`
 - Supported languages: English (en), Spanish (es), Portuguese (pt)
-- Generated code: `packages/core/lib/localization/generated/`
+- Generated code: `packages/localization/lib/generated/`
 
 ## 🔍 Code Quality
 

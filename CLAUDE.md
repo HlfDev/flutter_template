@@ -215,8 +215,10 @@ import 'package:design_system/atoms/label.dart';
 import 'package:design_system/design_system.dart';  // Gets everything
 
 // Same pattern for other packages:
+import 'package:app/app.dart';                      // All app functionality
 import 'package:core/core.dart';                    // All core functionality
-import 'package:feature_post/feature_post.dart';    // All post features
+import 'package:localization/localization.dart';    // All localization functionality
+import 'package:post/post.dart';                    // All post features
 ```
 
 ### Testing Strategy

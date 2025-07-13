@@ -1,5 +1,5 @@
-import 'package:core/core.dart';
+import 'package:app/app.dart';
 
 void main() {
-  CoreApp.main();
+  AppBootstrap.main();
 }

@@ -1,24 +1,28 @@
 // Core package exports
 
-// App layer
-export 'app/app.dart';
-export 'app/app_initializer.dart';
-export 'app/app_packages.dart';
-export 'app/core_app.dart';
-export 'app/routing/routing.dart';
-export 'app/service_locator/service_locator.dart';
+// Configuration
+export 'config/app_config.dart';
+export 'config/environment.dart';
 
 // Core utilities
-export 'core/config/environment.dart';
-export 'core/config/app_config.dart';
-export 'core/helpers/result.dart';
-export 'core/helpers/command.dart';
-export 'core/http/http_client.dart';
-export 'core/http/dio_client.dart';
-export 'core/http/http_logger_interceptor.dart';
-export 'core/observers/bloc_observer.dart';
-export 'core/observers/router_observer.dart';
-export 'core/utils/app_logger.dart';
+export 'helpers/command.dart';
+export 'helpers/result.dart';
 
-// Localization
-export 'localization/localization.dart';
+// HTTP
+export 'http/dio_client.dart';
+export 'http/http_client.dart';
+export 'http/http_logger_interceptor.dart';
+
+// Observers
+export 'observers/bloc_observer.dart';
+export 'observers/router_observer.dart';
+
+// Utils
+export 'utils/app_logger.dart';
+
+// External packages re-export
+export 'package:flutter_bloc/flutter_bloc.dart';
+export 'package:get_it/get_it.dart';
+export 'package:dio/dio.dart';
+export 'package:logger/logger.dart';
+export 'package:equatable/equatable.dart';

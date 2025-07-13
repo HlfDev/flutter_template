@@ -1,5 +1,5 @@
 name: design_system
-description: "Design system package with reusable UI components and design tokens"
+description: "Design system"
 publish_to: 'none'
 
 version: 1.0.0+1

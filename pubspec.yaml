@@ -8,17 +8,19 @@ environment:
   sdk: ^3.8.1
 
 workspace:
+  - packages/app
   - packages/core
   - packages/design_system
-  - packages/feature_post
+  - packages/post
+  - packages/localization
 
 dependencies:
   flutter:
     sdk: flutter
 
   # Local packages
-  core:
-    path: packages/core
+  app:
+    path: packages/app
 
 dev_dependencies:
   flutter_test:
