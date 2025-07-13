@@ -12,6 +12,8 @@ class PostInitial extends PostState {}
 
 class PostLoading extends PostState {}
 
+class PostEmpty extends PostState {}
+
 class PostLoaded extends PostState {
   final List<Post> posts;
 

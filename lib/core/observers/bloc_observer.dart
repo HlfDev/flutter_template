@@ -5,19 +5,19 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    AppLogger.d('BlocEvent', '${bloc.runtimeType} $event');
+    AppLogger.d('Bloc', '${bloc.runtimeType} $event');
   }
 
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    AppLogger.d('BlocChange', '${bloc.runtimeType} $change');
+    AppLogger.d('Bloc', '${bloc.runtimeType} $change');
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    AppLogger.d('BlocTransition', '${bloc.runtimeType} $transition');
+    AppLogger.d('Bloc', '${bloc.runtimeType} $transition');
   }
 
   @override

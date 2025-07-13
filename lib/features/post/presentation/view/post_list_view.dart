@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:flutter_template/design_system/design_system.dart';
 import 'package:flutter_template/features/post/presentation/bloc/post_bloc.dart';
 import 'package:flutter_template/features/post/presentation/bloc/post_event.dart';
@@ -15,6 +14,7 @@ import 'package:flutter_template/features/post/presentation/widgets/post_list_li
 import 'package:flutter_template/features/post/presentation/widgets/post_list_retry.dart';
 import 'package:flutter_template/features/post/presentation/widgets/post_list_shimmer.dart';
 import 'package:flutter_template/localization/localization.dart';
+import 'package:get_it/get_it.dart';
 
 class PostListView extends StatelessWidget {
   const PostListView({super.key});
@@ -46,14 +46,6 @@ class _PostListViewState extends State<_PostListView> {
     _searchController.addListener(_onSearchChanged);
   }
 
-  void _onSearchChanged() {
-    _showClearButton.value = _searchController.text.isNotEmpty;
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 1500), () {
-      context.read<PostBloc>().add(FetchPosts(query: _searchController.text));
-    });
-  }
-
   @override
   void dispose() {
     _debounce?.cancel();
@@ -61,6 +53,14 @@ class _PostListViewState extends State<_PostListView> {
     _searchController.dispose();
     _showClearButton.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged() {
+    _showClearButton.value = _searchController.text.isNotEmpty;
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 1500), () {
+      context.read<PostBloc>().add(FetchPosts(query: _searchController.text));
+    });
   }
 
   @override
@@ -114,30 +114,28 @@ class _PostListViewState extends State<_PostListView> {
             return switch (state) {
               PostInitial() => const SizedBox.shrink(),
               PostLoading() => const PostListShimmer(),
-              PostLoaded() => state.posts.isEmpty
-                  ? const PostListEmpty()
-                  : PostListList(
-                      posts: state.posts,
-                      onEdit: (post) => showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (modalContext) => UpdatePostModal(
-                          post: post,
-                          postBloc: context.read<PostBloc>(),
-                        ),
-                      ),
-                      onDelete: (id) => showModalBottomSheet(
-                        context: context,
-                        builder: (modalContext) => DeletePostModal(
-                          postId: id,
-                          postBloc: context.read<PostBloc>(),
-                        ),
-                      ),
-                    ),
-              PostError() => PostListRetry(
-                  onRetry: () =>
-                      context.read<PostBloc>().add(const FetchPosts()),
+              PostEmpty() => const PostListEmpty(),
+              PostLoaded() => PostListList(
+                posts: state.posts,
+                onEdit: (post) => showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (modalContext) => UpdatePostModal(
+                    post: post,
+                    postBloc: context.read<PostBloc>(),
+                  ),
                 ),
+                onDelete: (id) => showModalBottomSheet(
+                  context: context,
+                  builder: (modalContext) => DeletePostModal(
+                    postId: id,
+                    postBloc: context.read<PostBloc>(),
+                  ),
+                ),
+              ),
+              PostError() => PostListRetry(
+                onRetry: () => context.read<PostBloc>().add(const FetchPosts()),
+              ),
               _ => const SizedBox.shrink(),
             };
           },
