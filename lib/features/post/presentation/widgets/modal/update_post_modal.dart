@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/core.dart';
 import 'package:flutter_template/design_system/design_system.dart';
 import 'package:flutter_template/features/post/post.dart';
 import 'package:flutter_template/localization/localization.dart';
@@ -7,12 +6,12 @@ import 'package:flutter_template/localization/localization.dart';
 class UpdatePostModal extends StatefulWidget {
   const UpdatePostModal({
     super.key,
-    required this.viewModel,
     required this.post,
+    required this.postBloc,
   });
 
-  final PostListViewModel viewModel;
   final Post post;
+  final PostBloc postBloc;
 
   @override
   State<UpdatePostModal> createState() => _UpdatePostModalState();
@@ -92,37 +91,19 @@ class _UpdatePostModalState extends State<UpdatePostModal> {
                       child: Text(context.l10n.cancelButton),
                     ),
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           final updatedPost = widget.post.copyWith(
                             title: _titleController.text,
                             body: _bodyController.text,
                           );
-                          await widget.viewModel.updatePost.execute(
-                            updatedPost,
+                          widget.postBloc.add(UpdatePost(updatedPost));
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(context.l10n.postUpdatedSuccess),
+                            ),
                           );
-                          if (!context.mounted) return;
-                          if (widget.viewModel.updatePost.status ==
-                              CommandStatus.success) {
-                            widget.viewModel.fetchPostList.execute(null);
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(context.l10n.postUpdatedSuccess),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  context.l10n.postUpdatedFailure(
-                                    widget.viewModel.updatePost.exception
-                                        .toString(),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
                         }
                       },
                       child: Text(context.l10n.updateButton),

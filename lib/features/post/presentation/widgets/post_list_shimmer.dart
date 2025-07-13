@@ -1,6 +1,6 @@
-import 'package:flutter_template/design_system/design_system.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:flutter_template/app/app_packages.dart';
+import 'package:flutter_template/design_system/design_system.dart';
 
 class PostListShimmer extends StatelessWidget {
   const PostListShimmer({super.key});

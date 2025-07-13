@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/core.dart';
 import 'package:flutter_template/design_system/design_system.dart';
 import 'package:flutter_template/features/post/post.dart';
 import 'package:flutter_template/localization/localization.dart';
 
 class CreatePostModal extends StatefulWidget {
-  const CreatePostModal({super.key, required this.viewModel});
+  const CreatePostModal({super.key, required this.postBloc});
 
-  final PostListViewModel viewModel;
+  final PostBloc postBloc;
 
   @override
   State<CreatePostModal> createState() => _CreatePostModalState();
@@ -80,37 +79,20 @@ class _CreatePostModalState extends State<CreatePostModal> {
                       child: Text(context.l10n.cancelButton),
                     ),
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           final newPost = Post(
-                            id: DateTime.now().millisecondsSinceEpoch
-                                .toString(),
+                            id: DateTime.now().millisecondsSinceEpoch.toString(),
                             title: _titleController.text,
                             body: _bodyController.text,
                           );
-                          await widget.viewModel.createPost.execute(newPost);
-                          if (!context.mounted) return;
-                          if (widget.viewModel.createPost.status ==
-                              CommandStatus.success) {
-                            widget.viewModel.fetchPostList.execute(null);
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(context.l10n.postCreatedSuccess),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  context.l10n.postCreatedFailure(
-                                    widget.viewModel.createPost.exception
-                                        .toString(),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
+                          widget.postBloc.add(CreatePost(newPost));
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(context.l10n.postCreatedSuccess),
+                            ),
+                          );
                         }
                       },
                       child: Text(context.l10n.createButton),

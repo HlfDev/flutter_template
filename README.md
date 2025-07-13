@@ -8,7 +8,7 @@ This is a robust Flutter project template designed for rapid development, emphas
 ## 🌟 Features
 
 -   **Simple Architecture:** Organized into `app`, `core`, `design_system`, and `features` layers for clear separation of concerns.
--   **State Management:** Utilizes `get_it` for dependency injection and `freezed` for immutable data models, promoting predictable state.
+-   **State Management:** Utilizes `flutter_bloc` for state management and `get_it` for dependency injection and service location. A custom `BlocObserver` is used for observing events and state changes.
 -   **Routing:** Implements declarative navigation using `go_router`.
 -   **Network Communication:** Built-in HTTP client with `Dio` and logging interceptors for robust API interactions.
 -   **Design System:** Dedicated `design_system` module with `Widgetbook` integration for developing and showcasing reusable UI components.

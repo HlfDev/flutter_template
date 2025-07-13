@@ -1,5 +1,6 @@
-import 'package:flutter_template/design_system/design_system.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/design_system/design_system.dart';
+import 'package:flutter_template/localization/localization.dart';
 
 class PostListRetry extends StatelessWidget {
   final VoidCallback onRetry;
@@ -10,13 +11,12 @@ class PostListRetry extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        spacing: kSize8,
         children: [
           Icon(Icons.error, size: kSize124, color: AppColors.error),
-          Label.bodyLarge(text: 'Failed to load posts'),
+          Text(context.l10n.failedToLoadPosts),
           TextButton(
             onPressed: onRetry,
-            child: const Label.bodyLarge(text: 'Retry'),
+            child: Text(context.l10n.retry),
           ),
         ],
       ),

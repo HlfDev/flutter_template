@@ -36,5 +36,7 @@
     "placeholders": {
       "error": {}
     }
-  }
+  },
+  "failedToLoadPosts": "Failed to load posts",
+  "retry": "Retry"
 }

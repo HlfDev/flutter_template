@@ -1,4 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_template/app/app_packages.dart';
 
 part 'post.freezed.dart';
 part 'post.g.dart';

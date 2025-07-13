@@ -74,4 +74,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String postDeletedFailure(Object error) {
     return 'Error al eliminar la publicación: $error';
   }
+
+  @override
+  String get failedToLoadPosts => 'Failed to load posts';
+
+  @override
+  String get retry => 'Retry';
 }

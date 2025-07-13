@@ -74,4 +74,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String postDeletedFailure(Object error) {
     return 'Falha ao excluir a publicação: $error';
   }
+
+  @override
+  String get failedToLoadPosts => 'Failed to load posts';
+
+  @override
+  String get retry => 'Retry';
 }

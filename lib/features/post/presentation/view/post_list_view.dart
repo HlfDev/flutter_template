@@ -1,21 +1,41 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:flutter_template/design_system/design_system.dart';
-import 'package:flutter_template/features/post/post.dart';
+import 'package:flutter_template/features/post/presentation/bloc/post_bloc.dart';
+import 'package:flutter_template/features/post/presentation/bloc/post_event.dart';
+import 'package:flutter_template/features/post/presentation/bloc/post_state.dart';
+import 'package:flutter_template/features/post/presentation/widgets/modal/create_post_modal.dart';
+import 'package:flutter_template/features/post/presentation/widgets/modal/delete_post_modal.dart';
+import 'package:flutter_template/features/post/presentation/widgets/modal/update_post_modal.dart';
+import 'package:flutter_template/features/post/presentation/widgets/post_list_empty.dart';
+import 'package:flutter_template/features/post/presentation/widgets/post_list_list.dart';
+import 'package:flutter_template/features/post/presentation/widgets/post_list_retry.dart';
+import 'package:flutter_template/features/post/presentation/widgets/post_list_shimmer.dart';
 import 'package:flutter_template/localization/localization.dart';
 
-class PostListView extends StatefulWidget {
-  const PostListView({super.key, required this.viewModel});
-
-  final PostListViewModel viewModel;
+class PostListView extends StatelessWidget {
+  const PostListView({super.key});
 
   @override
-  State<PostListView> createState() => _PostListViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => GetIt.I.get<PostBloc>()..add(const FetchPosts()),
+      child: const _PostListView(),
+    );
+  }
 }
 
-class _PostListViewState extends State<PostListView> {
+class _PostListView extends StatefulWidget {
+  const _PostListView();
+
+  @override
+  State<_PostListView> createState() => _PostListViewState();
+}
+
+class _PostListViewState extends State<_PostListView> {
   Timer? _debounce;
   final TextEditingController _searchController = TextEditingController();
   final ValueNotifier<bool> _showClearButton = ValueNotifier<bool>(false);
@@ -23,7 +43,6 @@ class _PostListViewState extends State<PostListView> {
   @override
   void initState() {
     super.initState();
-    widget.viewModel.fetchPostList.execute(null);
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -31,7 +50,7 @@ class _PostListViewState extends State<PostListView> {
     _showClearButton.value = _searchController.text.isNotEmpty;
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 1500), () {
-      widget.viewModel.fetchPostList.execute(_searchController.text);
+      context.read<PostBloc>().add(FetchPosts(query: _searchController.text));
     });
   }
 
@@ -46,8 +65,6 @@ class _PostListViewState extends State<PostListView> {
 
   @override
   Widget build(BuildContext context) {
-    final postList = widget.viewModel.fetchPostList;
-
     return Scaffold(
       appBar: AppBar(
         title: Label.titleLarge(text: context.l10n.title),
@@ -72,7 +89,7 @@ class _PostListViewState extends State<PostListView> {
                       icon: const Icon(Icons.clear),
                       onPressed: () {
                         _searchController.clear();
-                        widget.viewModel.fetchPostList.execute(null);
+                        context.read<PostBloc>().add(const FetchPosts());
                       },
                     );
                   },
@@ -92,40 +109,37 @@ class _PostListViewState extends State<PostListView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(kPadding16),
-        child: ListenableBuilder(
-          listenable: postList,
-          builder: (context, _) {
-            switch (postList.status) {
-              case CommandStatus.initial:
-                return const SizedBox.shrink();
-              case CommandStatus.running:
-                return const PostListShimmer();
-              case CommandStatus.success:
-                final List<Post> posts = postList.data ?? <Post>[];
-                if (posts.isEmpty) return const PostListEmpty();
-                return PostListList(
-                  posts: posts,
-                  onEdit: (post) => showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (context) => UpdatePostModal(
-                      viewModel: widget.viewModel,
-                      post: post,
+        child: BlocBuilder<PostBloc, PostState>(
+          builder: (context, state) {
+            return switch (state) {
+              PostInitial() => const SizedBox.shrink(),
+              PostLoading() => const PostListShimmer(),
+              PostLoaded() => state.posts.isEmpty
+                  ? const PostListEmpty()
+                  : PostListList(
+                      posts: state.posts,
+                      onEdit: (post) => showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (modalContext) => UpdatePostModal(
+                          post: post,
+                          postBloc: context.read<PostBloc>(),
+                        ),
+                      ),
+                      onDelete: (id) => showModalBottomSheet(
+                        context: context,
+                        builder: (modalContext) => DeletePostModal(
+                          postId: id,
+                          postBloc: context.read<PostBloc>(),
+                        ),
+                      ),
                     ),
-                  ),
-                  onDelete: (id) => showModalBottomSheet(
-                    context: context,
-                    builder: (context) => DeletePostModal(
-                      viewModel: widget.viewModel,
-                      postId: id,
-                    ),
-                  ),
-                );
-              case CommandStatus.failure:
-                return PostListRetry(
-                  onRetry: () => widget.viewModel.fetchPostList.execute(null),
-                );
-            }
+              PostError() => PostListRetry(
+                  onRetry: () =>
+                      context.read<PostBloc>().add(const FetchPosts()),
+                ),
+              _ => const SizedBox.shrink(),
+            };
           },
         ),
       ),
@@ -133,7 +147,8 @@ class _PostListViewState extends State<PostListView> {
         onPressed: () => showModalBottomSheet(
           context: context,
           isScrollControlled: true,
-          builder: (context) => CreatePostModal(viewModel: widget.viewModel),
+          builder: (modalContext) =>
+              CreatePostModal(postBloc: context.read<PostBloc>()),
         ),
         child: const Icon(Icons.add),
       ),

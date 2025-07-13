@@ -219,6 +219,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to delete post: {error}'**
   String postDeletedFailure(Object error);
+
+  /// No description provided for @failedToLoadPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load posts'**
+  String get failedToLoadPosts;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

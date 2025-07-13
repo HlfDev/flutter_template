@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/app/app_packages.dart';
 import 'package:flutter_template/app/routing/routing.dart';
 import 'package:flutter_template/features/post/post.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 
 GoRouter router() => GoRouter(
   initialLocation: Routes.postList,
@@ -11,10 +10,7 @@ GoRouter router() => GoRouter(
   routes: [
     GoRoute(
       path: Routes.postList,
-      builder: (context, state) {
-        final viewModel = GetIt.I<PostListViewModel>();
-        return PostListView(viewModel: viewModel);
-      },
+      builder: (context, state) => const PostListView(),
     ),
   ],
 );

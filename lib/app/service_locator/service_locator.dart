@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter_template/app/app_packages.dart';
 import 'package:flutter_template/core/core.dart';
-import 'package:flutter_template/features/post/post.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_template/features/post/data/apis/post_api.dart';
+import 'package:flutter_template/features/post/data/repositories/post_repository.dart';
+import 'package:flutter_template/features/post/presentation/bloc/post_bloc.dart';
 
 class ServiceLocator {
   ServiceLocator._();
@@ -22,10 +24,10 @@ class ServiceLocator {
       return PostRepository(postApi: GetIt.I.get<PostApi>());
     });
 
-    // Controllers
-    GetIt.I.registerFactory<PostListViewModel>(() {
-      AppLogger.i('SERVICE_LOCATOR', 'Registering PostListViewModel');
-      return PostListViewModel(postRepository: GetIt.I.get<PostRepository>());
+    // BLoCs
+    GetIt.I.registerFactory<PostBloc>(() {
+      AppLogger.i('SERVICE_LOCATOR', 'Registering PostBloc');
+      return PostBloc(postRepository: GetIt.I.get<PostRepository>());
     });
   }
 }

@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:flutter_template/app/app_packages.dart';
 import 'package:flutter_template/core/core.dart';
 
 class DioHttpClient implements HttpClient {
