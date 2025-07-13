@@ -166,7 +166,7 @@ flutter_template/
     └── post/                        # Post feature implementation
         ├── lib/
         │   ├── data/                # Data layer (APIs, models, repositories)
-        │   ├── presentation/        # Presentation layer (BLoC, views, widgets)
+        │   ├── presentation/        # Presentation layer (viewmodels, views, widgets)
         │   └── post.dart            # Main package export
         └── pubspec.yaml
 ```

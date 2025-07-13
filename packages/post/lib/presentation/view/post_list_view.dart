@@ -1,32 +1,19 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
-import 'package:design_system/design_system.dart';
 import 'package:core/core.dart';
-import 'package:post/post.dart';
+import 'package:design_system/design_system.dart';
+import 'package:flutter/material.dart';
 import 'package:localization/localization.dart';
+import 'package:post/post.dart';
 
-class PostListView extends StatelessWidget {
+class PostListView extends StatefulWidget {
   const PostListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GetIt.I.get<PostBloc>()..add(const FetchPosts()),
-      child: const _PostListView(),
-    );
-  }
+  State<PostListView> createState() => PostListViewState();
 }
 
-class _PostListView extends StatefulWidget {
-  const _PostListView();
-
-  @override
-  State<_PostListView> createState() => _PostListViewState();
-}
-
-class _PostListViewState extends State<_PostListView> {
+class PostListViewState extends State<PostListView> {
   Timer? _debounce;
   final TextEditingController _searchController = TextEditingController();
   final ValueNotifier<bool> _showClearButton = ValueNotifier<bool>(false);
