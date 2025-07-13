@@ -7,11 +7,15 @@ class ServiceLocator {
   ServiceLocator._();
 
   static Future<void> registerDependencies() async {
+    // Configuration
+    final config = AppConfig.current;
+    GetIt.I.registerLazySingleton<AppConfig>(() => config);
+
     // Apis
     GetIt.I.registerLazySingleton<PostApi>(() {
-      AppLogger.i('SERVICE_LOCATOR', 'Registering PostApi');
+      AppLogger.i('SERVICE_LOCATOR', 'Registering PostApi for ${config.environment.name}');
       return PostApi(
-        httpClient: DioHttpClient(baseUrl: 'http://10.0.2.2:8080'),
+        httpClient: DioHttpClient(baseUrl: config.apiBaseUrl),
       );
     });
 

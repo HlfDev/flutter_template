@@ -29,12 +29,38 @@ flutter clean && flutter pub get
 ```
 
 ### Running the Application
+
+#### Environment-based Execution
 ```bash
-# Main app
-flutter run
+# Development environment (local API, full logging)
+flutter run --flavor development --dart-define=ENVIRONMENT=development
+# Or use script: ./scripts/run_dev.sh
+
+# Staging environment (staging API, logging enabled)
+flutter run --flavor staging --dart-define=ENVIRONMENT=staging
+# Or use script: ./scripts/run_staging.sh
+
+# Production environment (production API, logging disabled)
+flutter run --flavor production --dart-define=ENVIRONMENT=production
+# Or use script: ./scripts/run_prod.sh
 
 # Widgetbook for component development
 flutter run -t packages/design_system/lib/widgetbook/main_widgetbook.dart
+```
+
+#### Building for Different Environments
+```bash
+# Development build
+flutter build apk --flavor development --dart-define=ENVIRONMENT=development
+# Or use script: ./scripts/build_dev.sh
+
+# Staging build  
+flutter build apk --flavor staging --dart-define=ENVIRONMENT=staging
+# Or use script: ./scripts/build_staging.sh
+
+# Production release build
+flutter build apk --flavor production --dart-define=ENVIRONMENT=production --release
+# Or use script: ./scripts/build_prod.sh
 ```
 
 ### Testing and Code Quality
@@ -57,8 +83,18 @@ cd packages/feature_post && flutter pub run build_runner build --delete-conflict
 # Generate localization files (core package only)
 cd packages/core && flutter gen-l10n
 
-# Generate app icons and splash screens (root level)
-flutter pub run flutter_launcher_icons
+# Generate app icons for all flavors (root level)
+flutter pub run flutter_launcher_icons -f flutter_launcher_icons_dev.yaml      # Development
+flutter pub run flutter_launcher_icons -f flutter_launcher_icons_staging.yaml  # Staging
+flutter pub run flutter_launcher_icons -f flutter_launcher_icons_prod.yaml     # Production
+
+# Or use convenience scripts:
+./scripts/generate_icons_dev.sh        # Development icons only
+./scripts/generate_icons_staging.sh    # Staging icons only
+./scripts/generate_icons_prod.sh       # Production icons only
+./scripts/generate_all_icons.sh        # All flavors at once
+
+# Generate splash screens (root level)
 flutter pub run flutter_native_splash:create
 ```
 
@@ -138,6 +174,29 @@ flutter_template/
 - **Design System**: Depends on core, provides UI components
 - **Feature Post**: Depends on core and design_system
 - **Root App**: Depends on core package only
+
+#### Environment Configuration
+The project supports three environments with different configurations:
+
+| Environment | App Name | Bundle ID | API Base URL | Logging |
+|-------------|----------|-----------|--------------|---------|
+| **Development** | Flutter Template Dev | `com.hlfdev.flutter_template.dev` | `http://10.0.2.2:8080` | ✅ Enabled |
+| **Staging** | Flutter Template Staging | `com.hlfdev.flutter_template.staging` | `https://api-staging.example.com` | ✅ Enabled |
+| **Production** | Flutter Template | `com.hlfdev.flutter_template` | `https://api.example.com` | ❌ Disabled |
+
+**Configuration Classes:**
+- `Environment` enum: Determines current environment from `--dart-define=ENVIRONMENT`
+- `AppConfig` class: Provides environment-specific configuration (API URLs, app names, logging)
+- Automatic environment detection in `AppConfig.current`
+
+#### Flavor-Specific App Icons
+Each environment has its own app icon configuration for easy identification:
+
+- **Development**: `assets/icon/flavors/development/ic_launcher.png` (configured in `flutter_launcher_icons_dev.yaml`)
+- **Staging**: `assets/icon/flavors/staging/ic_launcher.png` (configured in `flutter_launcher_icons_staging.yaml`)  
+- **Production**: `assets/icon/flavors/production/ic_launcher.png` (configured in `flutter_launcher_icons_prod.yaml`)
+
+Icons are automatically applied when building for specific flavors. Use the generation scripts in the `scripts/` directory to update icons for all or individual environments.
 
 ### Code Style and Standards
 - **Shared Analysis Options**: Root `analysis_options.yaml` applies to all packages for consistent standards

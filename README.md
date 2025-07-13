@@ -3,89 +3,239 @@
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.x.x-blue.svg)](https://flutter.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is a robust Flutter project template designed for rapid development, emphasizing a simple architecture and a comprehensive design system. It incorporates best practices for state management, routing, network communication, and internationalization, making it an ideal starting point for scalable and maintainable applications.
+A production-ready Flutter project template built with multi-package workspace architecture, comprehensive environment support, and robust development tooling. Designed for rapid development with clean architecture patterns and a comprehensive design system.
 
 ## 🌟 Features
 
--   **Simple Architecture:** Organized into `app`, `core`, `design_system`, and `features` layers for clear separation of concerns.
--   **State Management:** Utilizes `flutter_bloc` for state management and `get_it` for dependency injection and service location. A custom `BlocObserver` is used for observing events and state changes.
--   **Routing:** Implements declarative navigation using `go_router`.
--   **Network Communication:** Built-in HTTP client with `Dio` and logging interceptors for robust API interactions.
--   **Design System:** Dedicated `design_system` module with `Widgetbook` integration for developing and showcasing reusable UI components.
--   **Internationalization (i18n):** Supports multiple languages with `flutter_localizations` and `intl`.
--   **Logging:** Comprehensive logging with `logger` for effective debugging and monitoring.
--   **Testing:** Includes setup for unit, widget, and integration tests.
+### Architecture & Organization
+- **Multi-Package Workspace:** Organized into `core`, `design_system`, and `feature_post` packages for clear separation of concerns
+- **Clean Architecture:** Implements layered architecture with data, domain, and presentation layers
+- **State Management:** BLoC pattern with `flutter_bloc` for reactive state management
+- **Dependency Injection:** Service locator pattern using `get_it`
 
-## 🚀 Getting Started
+### Development Experience
+- **Environment Support:** Development, staging, and production configurations with flavor-specific settings
+- **Design System:** Dedicated package with Widgetbook integration for component development
+- **Comprehensive Tooling:** Scripts for building, running, testing, and asset generation
+- **Clean Imports:** Single package exports for simplified import patterns
 
-To get a local copy up and running, follow these simple steps.
+### Production Features
+- **Internationalization:** Multi-language support with `flutter_localizations`
+- **Network Layer:** Robust HTTP client with Dio, interceptors, and error handling
+- **Error Handling:** Custom Result pattern for type-safe error management
+- **Logging:** Environment-based logging with structured output
+- **Testing:** Comprehensive test setup with unit, widget, and BLoC tests
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-Make sure you have Flutter installed. If not, follow the instructions on the [official Flutter website](https://flutter.dev/docs/get-started/install).
+- Flutter 3.x.x or later
+- Dart SDK 3.x.x or later
 
 ### Installation
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/hlfdev/flutter_template.git
-    cd flutter_template
-    ```
-2.  Get Flutter dependencies:
-    ```bash
-    flutter pub get
-    ```
-3.  Generate necessary files (e.g., for Freezed, JSON serialization, and localization):
-    ```bash
-    flutter pub run build_runner build --delete-conflicting-outputs
-    flutter gen-l10n
-    ```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/hlfdev/flutter_template.git
+   cd flutter_template
+   ```
 
-### Running the App
+2. Install dependencies for all packages:
+   ```bash
+   flutter pub get
+   ```
 
-To run the app on a connected device or emulator:
+3. Generate code and localization files:
+   ```bash
+   # Run from project root
+   ./scripts/development/run_build_runner.sh
+   ./scripts/development/generate_localization.sh
+   ```
 
+4. Generate app icons for all flavors:
+   ```bash
+   ./scripts/icons/generate_all_icons.sh
+   ```
+
+## 🏃‍♂️ Running the Application
+
+### Environment-Based Execution
+
+The project supports three environments with different configurations:
+
+| Environment | App Name | Bundle ID | API Base URL | Logging |
+|-------------|----------|-----------|--------------|---------|
+| **Development** | Flutter Template Dev | `com.hlfdev.flutter_template.dev` | `http://10.0.2.2:8080` | ✅ Enabled |
+| **Staging** | Flutter Template Staging | `com.hlfdev.flutter_template.staging` | `https://api-staging.example.com` | ✅ Enabled |
+| **Production** | Flutter Template | `com.hlfdev.flutter_template` | `https://api.example.com` | ❌ Disabled |
+
+#### Using Scripts (Recommended)
 ```bash
-flutter run
+# Development environment
+./scripts/run_dev.sh
+
+# Staging environment
+./scripts/run_staging.sh
+
+# Production environment
+./scripts/run_prod.sh
+
+# Design system development
+./scripts/run_widgetbook.sh
 ```
 
-### Running Widgetbook
-
-To view and develop UI components in isolation using Widgetbook:
-
+#### Manual Commands
 ```bash
-flutter run -t lib/design_system/widgetbook/main_widgetbook.dart
+# Development
+flutter run --flavor development --dart-define=ENVIRONMENT=development
+
+# Staging
+flutter run --flavor staging --dart-define=ENVIRONMENT=staging
+
+# Production
+flutter run --flavor production --dart-define=ENVIRONMENT=production
+
+# Widgetbook
+flutter run -t packages/design_system/lib/widgetbook/main_widgetbook.dart
 ```
 
-### Running Tests
+## 🏗️ Building for Production
 
-To run all tests:
-
+### Using Scripts
 ```bash
-flutter test
+# Build for specific environment
+./scripts/build/build_dev.sh      # Development APK
+./scripts/build/build_staging.sh  # Staging APK
+./scripts/build/build_prod.sh     # Production APK (release)
+```
+
+### Manual Commands
+```bash
+# Development build
+flutter build apk --flavor development --dart-define=ENVIRONMENT=development
+
+# Staging build
+flutter build apk --flavor staging --dart-define=ENVIRONMENT=staging
+
+# Production release build
+flutter build apk --flavor production --dart-define=ENVIRONMENT=production --release
 ```
 
 ## 📂 Project Structure
 
--   `lib/`: Main application source code.
-    -   `app/`: Application-level configurations, routing, and service location.
-        -   `routing/`: `go_router` setup and route definitions.
-        -   `service_locator/`: Dependency injection setup with `get_it`.
-    -   `core/`: Core functionalities like HTTP clients, helpers, and utilities.
-        -   `http/`: `Dio` client and interceptors.
-        -   `helpers/`: Utility functions and common patterns.
-    -   `design_system/`: Reusable UI components, tokens (colors, sizes), and `Widgetbook` stories.
-        -   `tokens/`: Design tokens like `AppColors`, `AppSizes`, `AppBreakpoints`, `AppTheme`.
-        -   `atoms/`, `molecules/`, `organisms/`: UI component categorization (example structure).
-        -   `widgetbook/`: Widgetbook main file and generated directories.
-    -   `features/`: Modularized application features (e.g., `post`). Each feature typically contains:
-        -   `data/`: Data sources (APIs), models, and repositories.
-        -   `domain/`: Business logic (if applicable, not explicitly shown but implied by clean architecture).
-        -   `presentation/`: UI (views, view models, widgets).
-    -   `localization/`: Internationalization files (`.arb`) and generated code.
--   `test/`: Unit, widget, and integration tests.
--   `assets/`: Static assets like images and fonts.
+```
+flutter_template/
+├── lib/main.dart                    # Entry point - calls CoreApp.main()
+├── pubspec.yaml                     # Workspace root configuration
+├── analysis_options.yaml            # Shared linting rules
+├── scripts/                         # Development and build scripts
+│   ├── build/                       # Build scripts for each flavor
+│   ├── development/                 # Development tools (build_runner, localization)
+│   └── icons/                       # Icon generation scripts
+├── assets/
+│   └── icon/flavors/               # Flavor-specific app icons
+└── packages/
+    ├── core/                        # Core functionality package
+    │   ├── lib/
+    │   │   ├── app/                 # App initialization & configuration
+    │   │   ├── core/                # Core utilities (HTTP, logging, helpers)
+    │   │   ├── localization/        # i18n support
+    │   │   └── core.dart            # Main package export
+    │   └── pubspec.yaml
+    ├── design_system/               # UI components & design tokens
+    │   ├── lib/
+    │   │   ├── atoms/               # Basic UI components
+    │   │   ├── tokens/              # Design tokens (colors, theme)
+    │   │   ├── widgetbook/          # Component development environment
+    │   │   └── design_system.dart   # Main package export
+    │   └── pubspec.yaml
+    └── feature_post/                # Post feature implementation
+        ├── lib/
+        │   ├── data/                # Data layer (APIs, models, repositories)
+        │   ├── presentation/        # Presentation layer (BLoC, views, widgets)
+        │   └── feature_post.dart    # Main package export
+        └── pubspec.yaml
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+flutter test
+
+# Run tests for specific package
+cd packages/core && flutter test
+cd packages/feature_post && flutter test
+
+# Run with coverage
+flutter test --coverage
+```
+
+## 🔧 Development Scripts
+
+The project includes several convenience scripts in the `scripts/` directory:
+
+### Development Tools
+- `./scripts/development/clean_and_get_packages.sh` - Clean and reinstall all dependencies
+- `./scripts/development/run_build_runner.sh` - Generate code for all packages
+- `./scripts/development/generate_localization.sh` - Generate localization files
+
+### Icon Management
+- `./scripts/icons/generate_all_icons.sh` - Generate icons for all flavors
+- `./scripts/icons/generate_icons_dev.sh` - Generate development icons only
+- `./scripts/icons/generate_icons_staging.sh` - Generate staging icons only
+- `./scripts/icons/generate_icons_prod.sh` - Generate production icons only
+
+### Build Scripts
+- `./scripts/build/build_dev.sh` - Build development APK
+- `./scripts/build/build_staging.sh` - Build staging APK
+- `./scripts/build/build_prod.sh` - Build production APK
+
+### Run Scripts
+- `./scripts/run_dev.sh` - Run development environment
+- `./scripts/run_staging.sh` - Run staging environment
+- `./scripts/run_prod.sh` - Run production environment
+- `./scripts/run_widgetbook.sh` - Run Widgetbook for component development
+
+## 🎨 Design System
+
+The design system is organized in a separate package with Widgetbook integration:
+
+```bash
+# Run Widgetbook for component development
+./scripts/run_widgetbook.sh
+```
+
+### Package Structure
+- **Tokens:** Colors, typography, spacing, and theme definitions
+- **Atoms:** Basic UI components (labels, buttons, inputs)
+- **Widgetbook:** Interactive component showcase and development environment
+
+## 🌍 Internationalization
+
+The project supports multiple languages with centralized translation management:
+
+- Translation files: `packages/core/lib/localization/arb/`
+- Supported languages: English (en), Spanish (es), Portuguese (pt)
+- Generated code: `packages/core/lib/localization/generated/`
+
+## 🔍 Code Quality
+
+- **Linting:** Shared `analysis_options.yaml` with strict rules
+- **Package Imports:** Clean import pattern using single package exports
+- **Type Safety:** Strict type checking and null safety
+- **Error Handling:** Custom Result pattern for type-safe error management
+
+## 📚 Additional Resources
+
+- **CLAUDE.md** - Detailed technical documentation and architecture guide
+- **Widgetbook** - Interactive component library at `./scripts/run_widgetbook.sh`
+- **Package Documentation** - Each package contains detailed README files
 
 ## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+**HLFDev Flutter Template** - Ready for production, optimized for development.

@@ -20,18 +20,46 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.hlfdev.flutter_template"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "environment"
+    
+    productFlavors {
+        create("development") {
+            dimension = "environment"
+            applicationId = "com.hlfdev.flutter_template.dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "Flutter Template Dev")
+        }
+        
+        create("staging") {
+            dimension = "environment"
+            applicationId = "com.hlfdev.flutter_template.staging"
+            versionNameSuffix = "-staging"
+            resValue("string", "app_name", "Flutter Template Staging")
+        }
+        
+        create("production") {
+            dimension = "environment"
+            applicationId = "com.hlfdev.flutter_template"
+            resValue("string", "app_name", "Flutter Template")
+        }
+    }
+
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
+        }
+        
         release {
+            isMinifyEnabled = true
+            isDebuggable = false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")

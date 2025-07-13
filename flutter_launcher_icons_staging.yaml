@@ -1,0 +1,10 @@
+flutter_launcher_icons:
+  image_path: "assets/icon/flavors/staging/ic_launcher.png"
+  adaptive_icon_background: "assets/icon/flavors/staging/background.png"
+  adaptive_icon_foreground: "assets/icon/flavors/staging/foreground.png"
+  
+  android: "ic_launcher"
+  min_sdk_android: 21
+  flavor: "staging"
+  
+  ios: false

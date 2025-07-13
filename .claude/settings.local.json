@@ -8,7 +8,11 @@
       "Bash(flutter gen-l10n:*)",
       "Bash(flutter analyze:*)",
       "Bash(dart analyze:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/generate_all_icons.sh:*)",
+      "Bash(mv:*)",
+      "Bash(ls:*)"
     ],
     "deny": []
   }
