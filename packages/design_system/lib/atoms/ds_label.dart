@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:design_system/tokens/ds_sizes.dart';
 
-class Label extends StatelessWidget {
+class DSLabel extends StatelessWidget {
   final String text;
   final double fontSize;
   final Color? color;
@@ -10,7 +11,7 @@ class Label extends StatelessWidget {
   final int? maxLines;
   final TextOverflow? overflow;
 
-  const Label._({
+  const DSLabel._({
     super.key,
     required this.text,
     required this.fontSize,
@@ -21,7 +22,7 @@ class Label extends StatelessWidget {
     this.overflow,
   });
 
-  const Label.titleLarge({
+  const DSLabel.titleLarge({
     Key? key,
     required String text,
     Color? color,
@@ -32,7 +33,7 @@ class Label extends StatelessWidget {
   }) : this._(
          key: key,
          text: text,
-         fontSize: 22,
+         fontSize: DSSizes.fontTitle,
          fontWeight: fontWeight ?? FontWeight.bold,
          color: color,
          textAlign: textAlign ?? TextAlign.start,
@@ -40,7 +41,7 @@ class Label extends StatelessWidget {
          overflow: overflow,
        );
 
-  const Label.titleMedium({
+  const DSLabel.titleMedium({
     Key? key,
     required String text,
     Color? color,
@@ -51,7 +52,7 @@ class Label extends StatelessWidget {
   }) : this._(
          key: key,
          text: text,
-         fontSize: 18,
+         fontSize: DSSizes.fontXL,
          fontWeight: fontWeight ?? FontWeight.w600,
          color: color,
          textAlign: textAlign ?? TextAlign.start,
@@ -59,7 +60,7 @@ class Label extends StatelessWidget {
          overflow: overflow,
        );
 
-  const Label.bodyLarge({
+  const DSLabel.bodyLarge({
     Key? key,
     required String text,
     Color? color,
@@ -70,7 +71,7 @@ class Label extends StatelessWidget {
   }) : this._(
          key: key,
          text: text,
-         fontSize: 16,
+         fontSize: DSSizes.fontL,
          fontWeight: fontWeight ?? FontWeight.normal,
          color: color,
          textAlign: textAlign ?? TextAlign.start,
@@ -78,7 +79,7 @@ class Label extends StatelessWidget {
          overflow: overflow,
        );
 
-  const Label.bodyMedium({
+  const DSLabel.bodyMedium({
     Key? key,
     required String text,
     Color? color,
@@ -89,7 +90,7 @@ class Label extends StatelessWidget {
   }) : this._(
          key: key,
          text: text,
-         fontSize: 14,
+         fontSize: DSSizes.fontM,
          fontWeight: fontWeight ?? FontWeight.normal,
          color: color,
          textAlign: textAlign ?? TextAlign.start,
@@ -97,7 +98,7 @@ class Label extends StatelessWidget {
          overflow: overflow,
        );
 
-  const Label.bodySmall({
+  const DSLabel.bodySmall({
     Key? key,
     required String text,
     Color? color,
@@ -108,8 +109,65 @@ class Label extends StatelessWidget {
   }) : this._(
          key: key,
          text: text,
-         fontSize: 12,
+         fontSize: DSSizes.fontS,
          fontWeight: fontWeight ?? FontWeight.normal,
+         color: color,
+         textAlign: textAlign ?? TextAlign.start,
+         maxLines: maxLines,
+         overflow: overflow,
+       );
+
+  const DSLabel.caption({
+    Key? key,
+    required String text,
+    Color? color,
+    TextAlign? textAlign,
+    int? maxLines,
+    TextOverflow? overflow,
+    FontWeight? fontWeight,
+  }) : this._(
+         key: key,
+         text: text,
+         fontSize: DSSizes.fontXS,
+         fontWeight: fontWeight ?? FontWeight.normal,
+         color: color,
+         textAlign: textAlign ?? TextAlign.start,
+         maxLines: maxLines,
+         overflow: overflow,
+       );
+
+  const DSLabel.headline({
+    Key? key,
+    required String text,
+    Color? color,
+    TextAlign? textAlign,
+    int? maxLines,
+    TextOverflow? overflow,
+    FontWeight? fontWeight,
+  }) : this._(
+         key: key,
+         text: text,
+         fontSize: DSSizes.fontHeadline,
+         fontWeight: fontWeight ?? FontWeight.bold,
+         color: color,
+         textAlign: textAlign ?? TextAlign.start,
+         maxLines: maxLines,
+         overflow: overflow,
+       );
+
+  const DSLabel.display({
+    Key? key,
+    required String text,
+    Color? color,
+    TextAlign? textAlign,
+    int? maxLines,
+    TextOverflow? overflow,
+    FontWeight? fontWeight,
+  }) : this._(
+         key: key,
+         text: text,
+         fontSize: DSSizes.fontDisplay,
+         fontWeight: fontWeight ?? FontWeight.bold,
          color: color,
          textAlign: textAlign ?? TextAlign.start,
          maxLines: maxLines,

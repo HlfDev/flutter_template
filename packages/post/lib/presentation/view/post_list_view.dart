@@ -45,12 +45,12 @@ class PostListViewState extends State<PostListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Label.titleLarge(text: context.l10n.title),
+        title: DSLabel.titleLarge(text: context.l10n.title),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Padding(
-            padding: const EdgeInsets.all(kPadding8),
+            padding: const EdgeInsets.all(DSSizes.spacingS),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -73,7 +73,7 @@ class PostListViewState extends State<PostListView> {
                   },
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(kBorderRadius24),
+                  borderRadius: BorderRadius.circular(DSSizes.radiusXL),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
@@ -86,7 +86,7 @@ class PostListViewState extends State<PostListView> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(kPadding16),
+        padding: const EdgeInsets.all(DSSizes.spacingM),
         child: BlocBuilder<PostBloc, PostState>(
           builder: (context, state) {
             return switch (state) {

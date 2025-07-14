@@ -7,29 +7,29 @@ class PostListShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppColors.lightGrey20,
-      highlightColor: AppColors.lightGrey10,
+      baseColor: DSColors.lightGrey20,
+      highlightColor: DSColors.lightGrey10,
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: Container(
-              height: kSize48,
+              height: DSSizes.sizeXXL,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(kBorderRadius24),
+                borderRadius: BorderRadius.circular(DSSizes.radiusXL),
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: kSize24)),
+          const SliverToBoxAdapter(child: SizedBox(height: DSSizes.sizeL)),
           SliverList.separated(
             itemCount: 2,
             separatorBuilder: (BuildContext context, int index) => Divider(),
             itemBuilder: (context, index) {
               return Container(
-                height: kSize60,
+                height: DSSizes.sizeLarge,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(kSize16),
+                  borderRadius: BorderRadius.circular(DSSizes.sizeM),
                 ),
               );
             },

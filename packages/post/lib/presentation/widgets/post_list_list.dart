@@ -26,17 +26,17 @@ class PostListList extends StatelessWidget {
           itemBuilder: (context, index) {
             final post = posts[index];
             return Card(
-              margin: const EdgeInsets.symmetric(vertical: kPadding8),
+              margin: const EdgeInsets.symmetric(vertical: DSSizes.spacingS),
               elevation: 2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(kBorderRadius8),
+                borderRadius: BorderRadius.circular(DSSizes.radiusS),
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.all(kPadding16),
+                contentPadding: const EdgeInsets.all(DSSizes.spacingM),
                 onTap: () {},
                 leading: Icon(
                   Icons.bookmark,
-                  size: kSize32,
+                  size: DSSizes.sizeXL,
                   color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
@@ -53,7 +53,7 @@ class PostListList extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         Icons.edit,
-                        size: kSize24,
+                        size: DSSizes.sizeL,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                       onPressed: () => onEdit(post),
@@ -61,7 +61,7 @@ class PostListList extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         Icons.delete,
-                        size: kSize24,
+                        size: DSSizes.sizeL,
                         color: Theme.of(context).colorScheme.error,
                       ),
                       onPressed: () => onDelete(post.id),

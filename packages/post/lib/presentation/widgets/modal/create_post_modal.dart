@@ -31,9 +31,9 @@ class _CreatePostModalState extends State<CreatePostModal> {
         child: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: kPadding16,
-            right: kPadding16,
-            top: kPadding16,
+            left: DSSizes.spacingM,
+            right: DSSizes.spacingM,
+            top: DSSizes.spacingM,
           ),
           child: Form(
             key: _formKey,
@@ -44,7 +44,7 @@ class _CreatePostModalState extends State<CreatePostModal> {
                   context.l10n.createPost,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                const SizedBox(height: kSize16),
+                const SizedBox(height: DSSizes.sizeM),
                 TextFormField(
                   controller: _titleController,
                   decoration: InputDecoration(
@@ -57,7 +57,7 @@ class _CreatePostModalState extends State<CreatePostModal> {
                     return null;
                   },
                 ),
-                const SizedBox(height: kSize16),
+                const SizedBox(height: DSSizes.sizeM),
                 TextFormField(
                   controller: _bodyController,
                   decoration: InputDecoration(
@@ -70,7 +70,7 @@ class _CreatePostModalState extends State<CreatePostModal> {
                     return null;
                   },
                 ),
-                const SizedBox(height: kSize16),
+                const SizedBox(height: DSSizes.sizeM),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

@@ -18,7 +18,7 @@ class DeletePostModal extends StatelessWidget {
     return Material(
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(kPadding16),
+          padding: const EdgeInsets.all(DSSizes.spacingM),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -26,9 +26,9 @@ class DeletePostModal extends StatelessWidget {
                 context.l10n.deletePost,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              const SizedBox(height: kSize16),
+              const SizedBox(height: DSSizes.sizeM),
               Text(context.l10n.deletePostConfirmation),
-              const SizedBox(height: kSize16),
+              const SizedBox(height: DSSizes.sizeM),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

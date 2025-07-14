@@ -10,7 +10,7 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:design_system/atoms/label.story.dart' as _i2;
+import 'package:design_system/atoms/ds_label.story.dart' as _i2;
 import 'package:widgetbook/widgetbook.dart' as _i1;
 
 final directories = <_i1.WidgetbookNode>[
@@ -18,7 +18,7 @@ final directories = <_i1.WidgetbookNode>[
     name: 'atoms',
     children: [
       _i1.WidgetbookLeafComponent(
-        name: 'Label',
+        name: 'DSLabel',
         useCase: _i1.WidgetbookUseCase(
           name: 'Labels',
           builder: _i2.labelUseCase,

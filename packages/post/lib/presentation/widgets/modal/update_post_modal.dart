@@ -43,9 +43,9 @@ class _UpdatePostModalState extends State<UpdatePostModal> {
         child: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: kPadding16,
-            right: kPadding16,
-            top: kPadding16,
+            left: DSSizes.spacingM,
+            right: DSSizes.spacingM,
+            top: DSSizes.spacingM,
           ),
           child: Form(
             key: _formKey,
@@ -56,7 +56,7 @@ class _UpdatePostModalState extends State<UpdatePostModal> {
                   context.l10n.updatePost,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                const SizedBox(height: kSize16),
+                const SizedBox(height: DSSizes.sizeM),
                 TextFormField(
                   controller: _titleController,
                   decoration: InputDecoration(
@@ -69,7 +69,7 @@ class _UpdatePostModalState extends State<UpdatePostModal> {
                     return null;
                   },
                 ),
-                const SizedBox(height: kSize16),
+                const SizedBox(height: DSSizes.sizeM),
                 TextFormField(
                   controller: _bodyController,
                   decoration: InputDecoration(
@@ -82,7 +82,7 @@ class _UpdatePostModalState extends State<UpdatePostModal> {
                     return null;
                   },
                 ),
-                const SizedBox(height: kSize16),
+                const SizedBox(height: DSSizes.sizeM),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
