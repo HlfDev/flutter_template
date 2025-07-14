@@ -5,7 +5,7 @@ enum Environment {
 
   static Environment get current {
     const String environment = String.fromEnvironment('ENVIRONMENT');
-    
+
     switch (environment) {
       case 'development':
         return Environment.development;

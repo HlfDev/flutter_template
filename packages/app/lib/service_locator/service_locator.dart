@@ -13,10 +13,11 @@ class ServiceLocator {
 
     // Apis
     GetIt.I.registerLazySingleton<PostApi>(() {
-      AppLogger.i('SERVICE_LOCATOR', 'Registering PostApi for ${config.environment.name}');
-      return PostApi(
-        httpClient: DioHttpClient(baseUrl: config.apiBaseUrl),
+      AppLogger.i(
+        'SERVICE_LOCATOR',
+        'Registering PostApi for ${config.environment.name}',
       );
+      return PostApi(httpClient: DioHttpClient(baseUrl: config.apiBaseUrl));
     });
 
     // Repositories

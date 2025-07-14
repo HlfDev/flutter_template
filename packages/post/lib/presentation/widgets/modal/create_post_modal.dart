@@ -82,7 +82,8 @@ class _CreatePostModalState extends State<CreatePostModal> {
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           final newPost = Post(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
+                            id: DateTime.now().millisecondsSinceEpoch
+                                .toString(),
                             title: _titleController.text,
                             body: _bodyController.text,
                           );

@@ -12,12 +12,13 @@ class PostListRetry extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error, size: DSSizes.sizeExtraLarge, color: DSColors.error),
-          Text(context.l10n.failedToLoadPosts),
-          TextButton(
-            onPressed: onRetry,
-            child: Text(context.l10n.retry),
+          Icon(
+            Icons.error,
+            size: DSSizes.sizeExtraLarge,
+            color: DSColors.error,
           ),
+          Text(context.l10n.failedToLoadPosts),
+          TextButton(onPressed: onRetry, child: Text(context.l10n.retry)),
         ],
       ),
     );
