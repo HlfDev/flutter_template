@@ -21,57 +21,31 @@ class AppLogger {
     return _logger!;
   }
 
-  static void t(
+  static void debug(
     String tag,
-    dynamic message, [
-    dynamic error,
+    Object? message, [
+    Object? error,
     StackTrace? stackTrace,
-  ]) {
-    _instance.t('[$tag] $message', error: error, stackTrace: stackTrace);
-  }
+  ]) => _instance.d('[$tag] $message', error: error, stackTrace: stackTrace);
 
-  static void d(
+  static void info(
     String tag,
-    dynamic message, [
-    dynamic error,
+    Object? message, [
+    Object? error,
     StackTrace? stackTrace,
-  ]) {
-    _instance.d('[$tag] $message', error: error, stackTrace: stackTrace);
-  }
+  ]) => _instance.i('[$tag] $message', error: error, stackTrace: stackTrace);
 
-  static void i(
+  static void warning(
     String tag,
-    dynamic message, [
-    dynamic error,
+    Object? message, [
+    Object? error,
     StackTrace? stackTrace,
-  ]) {
-    _instance.i('[$tag] $message', error: error, stackTrace: stackTrace);
-  }
+  ]) => _instance.w('[$tag] $message', error: error, stackTrace: stackTrace);
 
-  static void w(
+  static void error(
     String tag,
-    dynamic message, [
-    dynamic error,
+    Object? message, [
+    Object? error,
     StackTrace? stackTrace,
-  ]) {
-    _instance.w('[$tag] $message', error: error, stackTrace: stackTrace);
-  }
-
-  static void e(
-    String tag,
-    dynamic message, [
-    dynamic error,
-    StackTrace? stackTrace,
-  ]) {
-    _instance.e('[$tag] $message', error: error, stackTrace: stackTrace);
-  }
-
-  static void f(
-    String tag,
-    dynamic message, [
-    dynamic error,
-    StackTrace? stackTrace,
-  ]) {
-    _instance.f('[$tag] $message', error: error, stackTrace: stackTrace);
-  }
+  ]) => _instance.e('[$tag] $message', error: error, stackTrace: stackTrace);
 }

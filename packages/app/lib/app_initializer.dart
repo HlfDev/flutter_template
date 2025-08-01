@@ -10,11 +10,11 @@ class AppInitializer {
     WidgetsFlutterBinding.ensureInitialized();
 
     FlutterError.onError = (FlutterErrorDetails details) {
-      AppLogger.e('FLUTTER_ERROR', details.exception, details.stack);
+      AppLogger.error('FLUTTER_ERROR', details.exception, details.stack);
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
-      AppLogger.e('PLATFORM_ERROR', error, stack);
+      AppLogger.error('PLATFORM_ERROR', error, stack);
       return true;
     };
 

@@ -29,7 +29,7 @@ abstract class Command<T> extends ChangeNotifier {
   void clear() {
     _result = null;
     _status = CommandStatus.initial;
-    AppLogger.d('COMMAND', 'Command cleared: $runtimeType');
+    AppLogger.debug('COMMAND', 'Command cleared: $runtimeType');
     notifyListeners();
   }
 
@@ -38,13 +38,13 @@ abstract class Command<T> extends ChangeNotifier {
 
     _status = CommandStatus.running;
     _result = null;
-    AppLogger.d('COMMAND', 'Command running: $runtimeType');
+    AppLogger.debug('COMMAND', 'Command running: $runtimeType');
     notifyListeners();
 
     final resp = await action();
     _result = resp;
     _status = resp is Ok<T> ? CommandStatus.success : CommandStatus.failure;
-    AppLogger.d(
+    AppLogger.debug(
       'COMMAND',
       'Command finished with status: $_status for $runtimeType'
           '\nData: ${result?.value}',
