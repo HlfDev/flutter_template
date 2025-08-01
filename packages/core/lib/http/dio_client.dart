@@ -13,7 +13,7 @@ class DioHttpClient implements HttpClient {
         sendTimeout: const Duration(milliseconds: 5000),
       ),
     );
-    _dio.interceptors.add(HttpLoggerInterceptor());
+    _dio.interceptors.add(DioLogger());
   }
   set dio(Dio value) => _dio = value;
 

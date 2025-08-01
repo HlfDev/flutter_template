@@ -5,7 +5,7 @@ import 'package:post/post.dart';
 
 GoRouter router() => GoRouter(
   initialLocation: Routes.postList,
-  observers: [GoRouterObserver()],
+  observers: [NavigationLogger()],
   routes: [
     GoRoute(
       path: Routes.postList,

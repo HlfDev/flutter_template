@@ -18,6 +18,6 @@ class AppInitializer {
       return true;
     };
 
-    Bloc.observer = AppBlocObserver();
+    Bloc.observer = BlocLogger();
   }
 }
