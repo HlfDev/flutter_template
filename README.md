@@ -145,8 +145,8 @@ flutter_template/
     │   ├── lib/
     │   │   ├── config/              # Environment and app configuration
     │   │   ├── helpers/             # Result pattern, Command pattern
-    │   │   ├── http/                # Dio HTTP client & interceptors
-    │   │   ├── observers/           # BLoC & Router observers
+    │   │   ├── http/                # Dio HTTP client
+    │   │   ├── logs/                # BLoC & Http & Router loggers
     │   │   ├── utils/               # AppLogger and utilities
     │   │   └── core.dart            # Main package export
     │   └── pubspec.yaml
