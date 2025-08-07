@@ -1,193 +1,155 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:design_system/tokens/ds_sizes.dart';
 
 class DSLabel extends StatelessWidget {
   final String text;
-  final double fontSize;
+  final TextStyle Function(BuildContext context) styleBuilder;
   final Color? color;
-  final FontWeight fontWeight;
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? overflow;
+  final FontWeight? fontWeight;
 
-  const DSLabel._({
+  const DSLabel._(
+    this.text, {
     super.key,
-    required this.text,
-    required this.fontSize,
-    required this.fontWeight,
+    required this.styleBuilder,
     this.color,
-    required this.textAlign,
+    this.textAlign,
     this.maxLines,
     this.overflow,
+    this.fontWeight,
   });
 
-  const DSLabel.titleLarge({
+  static DSLabel titleLarge(
+    String text, {
     Key? key,
-    required String text,
     Color? color,
     TextAlign? textAlign,
     int? maxLines,
     TextOverflow? overflow,
     FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontTitle,
-         fontWeight: fontWeight ?? FontWeight.bold,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
+  }) {
+    return DSLabel._(
+      text,
+      key: key,
+      styleBuilder: (context) => Theme.of(context).textTheme.displaySmall!,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+      fontWeight: fontWeight,
+    );
+  }
 
-  const DSLabel.titleMedium({
+  static DSLabel titleMedium(
+    String text, {
     Key? key,
-    required String text,
     Color? color,
     TextAlign? textAlign,
     int? maxLines,
     TextOverflow? overflow,
     FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontXL,
-         fontWeight: fontWeight ?? FontWeight.w600,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
+  }) {
+    return DSLabel._(
+      text,
+      key: key,
+      styleBuilder: (context) => Theme.of(context).textTheme.headlineMedium!,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+      fontWeight: fontWeight,
+    );
+  }
 
-  const DSLabel.bodyLarge({
+  static DSLabel bodyLarge(
+    String text, {
     Key? key,
-    required String text,
     Color? color,
     TextAlign? textAlign,
     int? maxLines,
     TextOverflow? overflow,
     FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontL,
-         fontWeight: fontWeight ?? FontWeight.normal,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
+  }) {
+    return DSLabel._(
+      text,
+      key: key,
+      styleBuilder: (context) => Theme.of(context).textTheme.bodyLarge!,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+      fontWeight: fontWeight,
+    );
+  }
 
-  const DSLabel.bodyMedium({
+  static DSLabel bodyMedium(
+    String text, {
     Key? key,
-    required String text,
     Color? color,
     TextAlign? textAlign,
     int? maxLines,
     TextOverflow? overflow,
     FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontM,
-         fontWeight: fontWeight ?? FontWeight.normal,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
+  }) {
+    return DSLabel._(
+      text,
+      key: key,
+      styleBuilder: (context) => Theme.of(context).textTheme.bodyMedium!,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+      fontWeight: fontWeight,
+    );
+  }
 
-  const DSLabel.bodySmall({
+  static DSLabel bodySmall(
+    String text, {
     Key? key,
-    required String text,
     Color? color,
     TextAlign? textAlign,
     int? maxLines,
     TextOverflow? overflow,
     FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontS,
-         fontWeight: fontWeight ?? FontWeight.normal,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
+  }) {
+    return DSLabel._(
+      text,
+      key: key,
+      styleBuilder: (context) => Theme.of(context).textTheme.bodySmall!,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+      fontWeight: fontWeight,
+    );
+  }
 
-  const DSLabel.caption({
+  static DSLabel headline(
+    String text, {
     Key? key,
-    required String text,
     Color? color,
     TextAlign? textAlign,
-    int? maxLines,
-    TextOverflow? overflow,
-    FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontXS,
-         fontWeight: fontWeight ?? FontWeight.normal,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
-
-  const DSLabel.headline({
-    Key? key,
-    required String text,
-    Color? color,
-    TextAlign? textAlign,
-    int? maxLines,
-    TextOverflow? overflow,
-    FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontHeadline,
-         fontWeight: fontWeight ?? FontWeight.bold,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
-
-  const DSLabel.display({
-    Key? key,
-    required String text,
-    Color? color,
-    TextAlign? textAlign,
-    int? maxLines,
-    TextOverflow? overflow,
-    FontWeight? fontWeight,
-  }) : this._(
-         key: key,
-         text: text,
-         fontSize: DSSizes.fontDisplay,
-         fontWeight: fontWeight ?? FontWeight.bold,
-         color: color,
-         textAlign: textAlign ?? TextAlign.start,
-         maxLines: maxLines,
-         overflow: overflow,
-       );
+  }) {
+    return DSLabel._(
+      text,
+      key: key,
+      styleBuilder: (context) => Theme.of(context).textTheme.displayMedium!,
+      color: color,
+      textAlign: textAlign,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final defaultTextStyle = DefaultTextStyle.of(context).style;
+    final TextStyle baseStyle = styleBuilder.call(context);
 
     return Text(
       text,
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow,
-      style: GoogleFonts.poppins(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color ?? defaultTextStyle.color,
-      ),
+      style: baseStyle.copyWith(color: color, fontWeight: fontWeight),
     );
   }
 }

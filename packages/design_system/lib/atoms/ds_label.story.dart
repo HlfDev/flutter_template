@@ -11,35 +11,35 @@ Widget labelUseCase(BuildContext context) {
       spacing: 8.0,
       children: [
         DSLabel.titleLarge(
-          text: context.knobs.string(
+          context.knobs.string(
             label: 'Label Text',
             initialValue: 'Title Large Label',
           ),
           color: context.knobs.colorOrNull(label: 'Color'),
         ),
         DSLabel.titleMedium(
-          text: context.knobs.string(
+          context.knobs.string(
             label: 'Label Text',
             initialValue: 'Title Medium Label',
           ),
           color: context.knobs.colorOrNull(label: 'Color'),
         ),
         DSLabel.bodyLarge(
-          text: context.knobs.string(
+          context.knobs.string(
             label: 'Label Text',
             initialValue: 'Body Large Label',
           ),
           color: context.knobs.colorOrNull(label: 'Color'),
         ),
         DSLabel.bodyMedium(
-          text: context.knobs.string(
+          context.knobs.string(
             label: 'Label Text',
             initialValue: 'Body Medium Label',
           ),
           color: context.knobs.colorOrNull(label: 'Color'),
         ),
         DSLabel.bodySmall(
-          text: context.knobs.string(
+          context.knobs.string(
             label: 'Label Text',
             initialValue: 'Body Small Label',
           ),

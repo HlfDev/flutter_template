@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:design_system/design_system.dart';
+import 'package:flutter/material.dart';
 
 class PostListShimmer extends StatelessWidget {
   const PostListShimmer({super.key});
@@ -7,8 +7,8 @@ class PostListShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: DSColors.lightGrey20,
-      highlightColor: DSColors.lightGrey10,
+      baseColor: DSColors.neutral200,
+      highlightColor: DSColors.neutral100,
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -26,7 +26,7 @@ class PostListShimmer extends StatelessWidget {
             separatorBuilder: (BuildContext context, int index) => Divider(),
             itemBuilder: (context, index) {
               return Container(
-                height: DSSizes.sizeLarge,
+                height: DSSizes.sizeL,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(DSSizes.sizeM),

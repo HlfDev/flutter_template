@@ -1,17 +1,15 @@
-# ==============================================================================
-# Flutter Multi-Package Workspace .gitignore
-# Updated for 2024-2025 best practices
-# ==============================================================================
-
 # Miscellaneous
 *.class
+*.log
 *.pyc
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -20,12 +18,6 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# Visual Studio Code related
-# Uncomment .vscode/ if you want to ignore all VS Code settings
-# .vscode/
-# Keep launch.json and tasks.json for shared configurations
-.vscode/settings.json
-.vscode/extensions.json
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -37,169 +29,13 @@ migrate_working_dir/
 .pub/
 /build/
 
-# Multi-package workspace specific
-pubspec_overrides.yaml
-**/pubspec_overrides.yaml
-
-# Package-level lock files (keep root level for workspace)
-packages/**/pubspec.lock
-apps/**/pubspec.lock
-examples/**/pubspec.lock
-
-# Keep root pubspec.lock for workspace dependency resolution
-!/pubspec.lock
-
-# Package-level dart_tool directories
-packages/**/.dart_tool/
-apps/**/.dart_tool/
-examples/**/.dart_tool/
-
-# Code generation artifacts
-**/*.g.dart
-**/*.freezed.dart
-**/*.gr.dart
-**/*.config.dart
-**/generated_plugin_registrant.dart
-
-# Android related
-**/android/**/gradle-wrapper.jar
-**/android/.gradle
-**/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
-**/android/local.properties
-**/android/**/GeneratedPluginRegistrant.java
-**/android/key.properties
-**/android/app/debug
-**/android/app/profile
-**/android/app/release
-*.jks
-*.keystore
-
-# iOS related
-**/ios/**/*.mode1v3
-**/ios/**/*.mode2v3
-**/ios/**/*.moved-aside
-**/ios/**/*.pbxuser
-**/ios/**/*.perspectivev3
-**/ios/**/*sync/
-**/ios/**/.sconsign.dblite
-**/ios/**/.tags*
-**/ios/**/.vagrant/
-**/ios/**/DerivedData/
-**/ios/**/Icon?
-**/ios/**/Pods/
-**/ios/**/.symlinks/
-**/ios/**/profile
-**/ios/**/xcuserdata
-**/ios/.generated/
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Flutter.podspec
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/ephemeral/
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/Flutter/flutter_export_environment.sh
-**/ios/ServiceDefinitions.json
-**/ios/Runner/GeneratedPluginRegistrant.*
-**/ios/Podfile.lock
-
-# macOS related
-**/macos/Flutter/GeneratedPluginRegistrant.swift
-
-# Windows related
-**/windows/flutter/generated_plugin_registrant.cc
-**/windows/flutter/generated_plugin_registrant.h
-
-# Linux related
-**/linux/flutter/generated_plugin_registrant.cc
-**/linux/flutter/generated_plugin_registrant.h
-
-# Web related
-**/web/dart_tool/
-lib/generated_plugin_registrant.dart
-
 # Symbolication related
 app.*.symbols
 
 # Obfuscation related
 app.*.map.json
 
-# Coverage reports
-/coverage/
-**/coverage/
-lcov.info
-
-# Test related
-**/test/.test_coverage.dart
-**/test_coverage.dart
-
-# Firebase configuration (if using)
-**/google-services.json
-**/GoogleService-Info.plist
-**/firebase_options.dart
-
-# Environment and secrets
-.env
-.env.local
-.env.development
-.env.staging
-.env.production
-**/.env
-**/.env.*
-
-# API keys and secrets
-**/secrets/
-**/*secret*
-**/*key*
-**/*token*
-**/private/
-
-# Temporary files
-*.tmp
-*.temp
-*~
-
-# OS generated files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Archive files
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-
-
-# Editor backup files
-*~
-*.bak
-*.backup
-*.orig
-*.swp
-*.swo
-
-# Build artifacts specific to this project
-**/widgetbook/.dart_tool/
-**/widgetbook/build/
-
-# Melos specific (if using)
-melos_config.yaml
-.melos_config.yaml
-
-# FVM (Flutter Version Management) specific
-.fvm/flutter_sdk
-
-# Mason (code generation tool) specific
-.mason/
-
-# Widgetbook specific
-**/widgetbook/main_widgetbook.directories.g.dart
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release

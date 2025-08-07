@@ -45,7 +45,7 @@ class PostListViewState extends State<PostListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: DSLabel.titleLarge(text: context.l10n.title),
+        title: DSLabel.titleLarge(context.l10n.title),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
