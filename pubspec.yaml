@@ -11,7 +11,7 @@ workspace:
   - packages/app
   - packages/core
   - packages/design_system
-  - packages/post
+  - features/post
   - packages/localization
 
 dependencies:

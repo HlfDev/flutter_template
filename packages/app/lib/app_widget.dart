@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:app/routing/routing.dart';
+import 'package:app/app.dart';
 import 'package:design_system/design_system.dart';
-import 'package:localization/localization.dart';
+import 'package:flutter/material.dart';
+import 'package:localization/generated/app_localizations.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});

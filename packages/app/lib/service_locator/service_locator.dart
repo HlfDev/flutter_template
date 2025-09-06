@@ -1,35 +1,21 @@
-import 'dart:async';
-
 import 'package:core/core.dart';
-import 'package:post/post.dart';
+import 'package:post/post_module.dart';
 
 class ServiceLocator {
   ServiceLocator._();
 
+  static final GetIt _getIt = GetIt.instance;
+
+  static final List<Module> _modules = [PostModule()];
+
   static Future<void> registerDependencies() async {
     // Configuration
-    final config = AppConfig.current;
-    GetIt.I.registerLazySingleton<AppConfig>(() => config);
+    final appConfig = AppConfig.current;
+    _getIt.registerLazySingleton<AppConfig>(() => appConfig);
 
-    // Apis
-    GetIt.I.registerLazySingleton<PostApi>(() {
-      AppLogger.info(
-        'SERVICE_LOCATOR',
-        'Registering PostApi for ${config.environment.name}',
-      );
-      return PostApi(httpClient: DioHttpClient(baseUrl: config.apiBaseUrl));
-    });
-
-    // Repositories
-    GetIt.I.registerLazySingleton<PostRepository>(() {
-      AppLogger.info('SERVICE_LOCATOR', 'Registering PostRepository');
-      return PostRepository(postApi: GetIt.I.get<PostApi>());
-    });
-
-    // BLoCs
-    GetIt.I.registerFactory<PostBloc>(() {
-      AppLogger.info('SERVICE_LOCATOR', 'Registering PostBloc');
-      return PostBloc(postRepository: GetIt.I.get<PostRepository>());
-    });
+    // Modules
+    for (final module in _modules) {
+      module.registerDependencies(getIt: _getIt, appConfig: appConfig);
+    }
   }
 }
