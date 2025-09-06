@@ -23,7 +23,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     switch (result) {
       case Ok<List<Post>>():
-        if (result.value.isEmpty) emit(PostEmpty());
+        if (result.value.isEmpty) return emit(PostEmpty());
         if ((event.query ?? '').isNotEmpty) {
           final filteredPosts = result.value
               .where(
@@ -37,13 +37,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               )
               .toList();
 
-          if (filteredPosts.isEmpty) emit(PostEmpty());
-          emit(PostLoaded(filteredPosts));
+          if (filteredPosts.isEmpty) return emit(PostEmpty());
+          return emit(PostLoaded(filteredPosts));
         } else {
-          emit(PostLoaded(result.value));
+          return emit(PostLoaded(result.value));
         }
       case Error<List<Post>>():
-        emit(PostError(result.error.toString()));
+        return emit(PostError(result.error.toString()));
     }
   }
 

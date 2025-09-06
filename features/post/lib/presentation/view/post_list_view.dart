@@ -98,9 +98,9 @@ class PostListViewState extends State<PostListView> {
         child: BlocBuilder<PostBloc, PostState>(
           builder: (context, state) {
             return switch (state) {
-              PostInitial() => const SizedBox.shrink(),
-              PostLoading() => const PostListShimmer(),
+              PostInitial() => const PostListEmpty(),
               PostEmpty() => const PostListEmpty(),
+              PostLoading() => const PostListShimmer(),
               PostLoaded() => PostListList(
                 posts: state.posts,
                 onEdit: (post) => showModalBottomSheet(
