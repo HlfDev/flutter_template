@@ -24,8 +24,8 @@ class BlocLogger extends BlocObserver {
     AppLogger.error(
       'BlocError',
       '${bloc.runtimeType} $error',
-      error,
-      stackTrace,
+      error: error,
+      stackTrace: stackTrace,
     );
     super.onError(bloc, error, stackTrace);
   }

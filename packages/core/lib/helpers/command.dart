@@ -16,7 +16,7 @@ abstract class Command<T> extends ChangeNotifier {
 
   bool get running => status == CommandStatus.running;
   bool get completed => status == CommandStatus.success;
-  bool get error => status == CommandStatus.failure;
+  bool get failure => status == CommandStatus.failure;
 
   Result<T>? _result;
   Result<T>? get result => _result;
@@ -34,7 +34,7 @@ abstract class Command<T> extends ChangeNotifier {
   }
 
   Future<void> _execute(CommandAction0<T> action) async {
-    if (_status == CommandStatus.running) return;
+    if (running) return;
 
     _status = CommandStatus.running;
     _result = null;

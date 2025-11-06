@@ -6,15 +6,25 @@ import 'package:flutter/widgets.dart';
 class AppInitializer {
   AppInitializer._();
 
-  static Future<void> initialize() async {
+  static Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     FlutterError.onError = (FlutterErrorDetails details) {
-      AppLogger.error('FLUTTER_ERROR', details.exception, details.stack);
+      AppLogger.error(
+        'FLUTTER_ERROR',
+        details,
+        error: details.exception,
+        stackTrace: details.stack,
+      );
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
-      AppLogger.error('PLATFORM_ERROR', error, stack);
+      AppLogger.error(
+        'PLATFORM_ERROR',
+        'Unknown platform error',
+        error: error,
+        stackTrace: stack,
+      );
       return true;
     };
 

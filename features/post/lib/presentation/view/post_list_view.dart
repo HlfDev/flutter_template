@@ -15,7 +15,8 @@ import 'package:post/presentation/widgets/post_list_retry.dart';
 import 'package:post/presentation/widgets/post_list_shimmer.dart';
 
 class PostListView extends StatefulWidget {
-  const PostListView({super.key});
+  final PostBloc viewModel;
+  const PostListView({super.key, required this.viewModel});
 
   @override
   State<PostListView> createState() => PostListViewState();
@@ -96,6 +97,7 @@ class PostListViewState extends State<PostListView> {
       body: Padding(
         padding: const EdgeInsets.all(DSSizes.spacingM),
         child: BlocBuilder<PostBloc, PostState>(
+          bloc: widget.viewModel,
           builder: (context, state) {
             return switch (state) {
               PostInitial() => const PostListEmpty(),

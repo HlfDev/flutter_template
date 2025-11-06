@@ -37,8 +37,8 @@ class DioLogger extends Interceptor {
           'Status: ${err.response?.statusCode}'
           '\nError: ${err.error}'
           '\nResponse Data: ${err.response?.data}',
-      err,
-      err.stackTrace,
+      error: err,
+      stackTrace: err.stackTrace,
     );
     super.onError(err, handler);
   }

@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 
 abstract class Module {
-  void registerDependencies({
+  Future<void> registerDependencies({
     required GetIt getIt,
     required AppConfig appConfig,
   });

@@ -1,19 +1,19 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:post/data/apis/post_api.dart';
 import 'package:post/data/repositories/post_repository.dart';
+import 'package:post/data/sources/post_api.dart';
 import 'package:post/presentation/view/post_list_page.dart';
 import 'package:post/presentation/view_model/post_bloc.dart';
 
 class PostModule extends Module {
   @override
-  void registerDependencies({
+  Future<void> registerDependencies({
     required GetIt getIt,
     required AppConfig appConfig,
-  }) {
+  }) async {
     AppLogger.info('PostModule', 'Registering Dependencies');
 
-    // Apis
+    // Sources
     GetIt.I.registerLazySingleton<PostApi>(() {
       return PostApi(
         httpClient: DioHttpClient(baseUrl: 'http://10.0.2.2:8080'),
@@ -25,16 +25,18 @@ class PostModule extends Module {
       return PostRepository(postApi: GetIt.I.get<PostApi>());
     });
 
-    // BLoCs
+    // ViewModels
     GetIt.I.registerFactory<PostBloc>(() {
       return PostBloc(postRepository: GetIt.I.get<PostRepository>());
     });
+
+    AppLogger.info('PostModule', 'Finished registering Dependencies');
   }
 
   @override
   List<GoRoute> get routes => [
     GoRoute(
-      path: '/post-list',
+      path: PostListPage.path,
       pageBuilder: (BuildContext context, GoRouterState state) =>
           const MaterialPage(child: PostListPage()),
     ),

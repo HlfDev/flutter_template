@@ -3,12 +3,11 @@ import 'package:post/post_module.dart';
 
 GoRouter router() {
   final modules = [PostModule()];
-
-  final routes = modules.expand((module) => module.routes).toList();
+  final routeModules = modules.expand((module) => module.routes).toList();
 
   return GoRouter(
-    initialLocation: routes.first.path,
+    initialLocation: routeModules.first.path,
     observers: [NavigationLogger()],
-    routes: routes,
+    routes: routeModules,
   );
 }

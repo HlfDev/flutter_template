@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
-import 'package:post/data/apis/post_api.dart';
 import 'package:post/data/models/post.dart';
+import 'package:post/data/sources/post_api.dart';
 
 class PostRepository {
   final PostApi _postApi;

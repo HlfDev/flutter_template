@@ -1,9 +1,10 @@
 import 'package:core/core.dart';
+import 'package:core/http/http_override.dart';
 
 class DioHttpClient implements HttpClient {
   late Dio _dio;
 
-  DioHttpClient({required String baseUrl}) {
+  DioHttpClient({required String baseUrl, List<Interceptor>? interceptors}) {
     _dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
@@ -13,7 +14,12 @@ class DioHttpClient implements HttpClient {
         sendTimeout: const Duration(milliseconds: 5000),
       ),
     );
+    HttpOverridesFixture.call();
     _dio.interceptors.add(DioLogger());
+
+    if (interceptors != null) {
+      _dio.interceptors.addAll(interceptors);
+    }
   }
   set dio(Dio value) => _dio = value;
 

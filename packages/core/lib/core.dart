@@ -17,9 +17,9 @@ export 'helpers/result.dart';
 // HTTP
 export 'http/dio_client.dart';
 export 'http/http_client.dart';
+// Utils
+export 'logs/app_logger.dart';
 // Logs
 export 'logs/bloc_logger.dart';
 export 'logs/dio_logger.dart';
 export 'logs/navigation_logger.dart';
-// Utils
-export 'utils/app_logger.dart';

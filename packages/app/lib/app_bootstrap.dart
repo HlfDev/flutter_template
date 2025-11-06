@@ -7,7 +7,7 @@ class AppBootstrap {
   AppBootstrap._();
 
   static Future<void> main() async {
-    await AppInitializer.initialize();
+    await AppInitializer.init();
     await ServiceLocator.registerDependencies();
 
     runApp(const AppWidget());

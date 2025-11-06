@@ -11,11 +11,10 @@ class ServiceLocator {
   static Future<void> registerDependencies() async {
     // Configuration
     final appConfig = AppConfig.current;
-    _getIt.registerLazySingleton<AppConfig>(() => appConfig);
 
     // Modules
     for (final module in _modules) {
-      module.registerDependencies(getIt: _getIt, appConfig: appConfig);
+      await module.registerDependencies(getIt: _getIt, appConfig: appConfig);
     }
   }
 }

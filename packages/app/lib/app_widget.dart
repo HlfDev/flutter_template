@@ -6,6 +6,8 @@ import 'package:localization/generated/app_localizations.dart';
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
 
+  static final _router = router();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -13,9 +15,7 @@ class AppWidget extends StatelessWidget {
       theme: DSTheme.light,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      routerDelegate: router().routerDelegate,
-      routeInformationProvider: router().routeInformationProvider,
-      routeInformationParser: router().routeInformationParser,
+      routerConfig: _router,
     );
   }
 }
