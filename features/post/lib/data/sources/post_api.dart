@@ -3,18 +3,26 @@ import 'dart:io';
 import 'package:core/core.dart';
 import 'package:post/data/models/post.dart';
 
-class PostApi {
+abstract class PostApi {
+  Future<Result<List<Post>>> getPostsList();
+  Future<Result<Post>> createPost(Post post);
+  Future<Result<Post>> updatePost(Post post);
+  Future<Result<void>> deletePost(String id);
+}
+
+class PostApiImpl implements PostApi {
   final HttpClient _httpClient;
 
-  PostApi({required HttpClient httpClient}) : _httpClient = httpClient;
+  PostApiImpl({required HttpClient httpClient}) : _httpClient = httpClient;
 
+  @override
   Future<Result<List<Post>>> getPostsList() async {
     try {
       final response = await _httpClient.get('/posts');
 
       if (response.statusCode != HttpStatus.ok) throw Exception();
-      final list = response.data as List<dynamic>;
 
+      final list = response.data as List<dynamic>;
       final posts = list.map((post) => Post.fromJson(post)).toList();
 
       return Result.ok(posts);
@@ -23,6 +31,7 @@ class PostApi {
     }
   }
 
+  @override
   Future<Result<Post>> createPost(Post post) async {
     try {
       final response = await _httpClient.post('/posts', post.toJson());
@@ -37,6 +46,7 @@ class PostApi {
     }
   }
 
+  @override
   Future<Result<Post>> updatePost(Post post) async {
     try {
       final response = await _httpClient.put(
@@ -54,6 +64,7 @@ class PostApi {
     }
   }
 
+  @override
   Future<Result<void>> deletePost(String id) async {
     try {
       final response = await _httpClient.delete('/posts/$id');

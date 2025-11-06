@@ -15,14 +15,14 @@ class PostModule extends Module {
 
     // Sources
     GetIt.I.registerLazySingleton<PostApi>(() {
-      return PostApi(
+      return PostApiImpl(
         httpClient: DioHttpClient(baseUrl: 'http://10.0.2.2:8080'),
       );
     });
 
     // Repositories
     GetIt.I.registerLazySingleton<PostRepository>(() {
-      return PostRepository(postApi: GetIt.I.get<PostApi>());
+      return PostRepositoryImpl(postApi: GetIt.I.get<PostApi>());
     });
 
     // ViewModels

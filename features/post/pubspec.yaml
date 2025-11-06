@@ -14,11 +14,10 @@ dependencies:
     sdk: flutter
 
   core:
-    path: ../../packages/core
   design_system:
-    path: ../../packages/design_system
   localization:
-    path: ../../packages/localization
+
+
   shimmer: ^3.0.0
 
 
