@@ -366,15 +366,24 @@ This project uses **BLoC (Business Logic Component)** pattern with `flutter_bloc
     final Exception error;
   }
 
-  // Use in repository
+  // Use in API/Repository
   Future<Result<List<Post>>> getPosts() async {
     try {
-      final posts = await _api.fetchPosts();
+      final response = await _httpClient.get('/posts');
+
+      // Always check status code
+      if (response.statusCode != HttpStatus.ok) throw Exception();
+
+      final list = response.data as List<dynamic>;
+      final posts = list.map((json) => Post.fromJson(json)).toList();
       return Result.ok(posts);
-    } on Exception catch (e) {
-      return Result.error(e);
+    } catch (e) {
+      return Result.error(Exception(e));
     }
   }
+
+  // IMPORTANT: Always import dart:io for HttpStatus
+  import 'dart:io';
 
   // Handle in BLoC with pattern matching
   final result = await _repository.getPosts();
@@ -1083,6 +1092,328 @@ textTheme: const TextTheme(
 * **Place doc comments before annotations:** Documentation should come before
   any metadata annotations.
 
+### Project-Specific Documentation Rules
+
+**IMPORTANT:** Focus on quality over quantity. Don't add documentation to every function - only where it adds real value.
+
+#### When to Document
+
+✅ **DO document:**
+
+1. **Public API Classes and Methods**
+   - Classes that are exported and used by other packages
+   - Abstract interfaces (APIs, Repositories)
+   - Public methods with complex behavior
+
+2. **Non-Obvious Logic**
+   - Complex algorithms or calculations
+   - Workarounds for bugs or platform issues
+   - Performance optimizations
+   - Business logic that isn't self-explanatory
+
+3. **Important Context**
+   - Why a particular approach was chosen
+   - Trade-offs and limitations
+   - Dependencies on external systems or APIs
+   - State management patterns
+
+4. **Model Classes (Minimal)**
+   - Only document the class itself, not individual fields (field names should be self-explanatory)
+   - Document unusual field types or constraints
+
+#### When NOT to Document
+
+❌ **DON'T document:**
+
+1. **Self-Explanatory Code**
+   - Simple getters/setters
+   - Obvious constructors
+   - Straightforward CRUD operations
+   - Clear method names that explain themselves
+
+2. **Implementation Details**
+   - Private helper methods with clear names
+   - Simple event handlers
+   - Obvious state transitions
+
+3. **Redundant Information**
+   - Repeating the method name in different words
+   - Stating the obvious from the signature
+   - Comments that just restate the code
+
+#### Good vs Bad Examples
+
+**❌ BAD - Obvious and Redundant:**
+
+```dart
+/// Abstract interface for User API operations.
+abstract class UserApi {
+  /// Fetches the list of all users.
+  Future<Result<List<User>>> getUserList();
+
+  /// Fetches a single user by ID.
+  Future<Result<User>> getUserById(String id);
+
+  /// Creates a new user.
+  Future<Result<User>> createUser(User user);
+
+  /// Updates an existing user.
+  Future<Result<User>> updateUser(User user);
+
+  /// Deletes a user by ID.
+  Future<Result<void>> deleteUser(String id);
+}
+
+/// User model representing a user entity.
+@freezed
+class User with _$User {
+  /// Creates a new User instance.
+  const factory User({
+    required String id,
+    required String name,
+    required String email,
+    String? avatarUrl,
+  }) = _User;
+
+  /// Creates a User instance from JSON.
+  factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
+}
+```
+
+**✅ GOOD - Minimal and Meaningful:**
+
+```dart
+/// Handles all user-related API operations.
+///
+/// All methods return [Result<T>] for type-safe error handling.
+/// Network errors are wrapped in [Result.error] with exception details.
+abstract class UserApi {
+  Future<Result<List<User>>> getUserList();
+  Future<Result<User>> getUserById(String id);
+  Future<Result<User>> createUser(User user);
+  Future<Result<User>> updateUser(User user);
+  Future<Result<void>> deleteUser(String id);
+}
+
+/// Represents a user in the system.
+@freezed
+class User with _$User {
+  const factory User({
+    required String id,
+    required String name,
+    required String email,
+    String? avatarUrl,
+  }) = _User;
+
+  factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
+}
+```
+
+**❌ BAD - Restating the Obvious:**
+
+```dart
+/// BLoC that manages user-related business logic and state.
+class UserBloc extends Bloc<UserEvent, UserState> {
+  UserBloc({required UserRepository repository})
+      : _repository = repository,
+        super(const UserInitial()) {
+    on<FetchUsers>(_onFetchUsers);
+    on<CreateUser>(_onCreateUser);
+  }
+
+  final UserRepository _repository;
+
+  /// Handles the FetchUsers event.
+  Future<void> _onFetchUsers(
+    FetchUsers event,
+    Emitter<UserState> emit,
+  ) async {
+    emit(const UserLoading());
+    final result = await _repository.getUserList();
+    // ... handle result
+  }
+}
+```
+
+**✅ GOOD - Documenting Why and Important Context:**
+
+```dart
+/// Manages user state and coordinates with the user repository.
+///
+/// This BLoC implements optimistic updates for create/update/delete
+/// operations to provide better UX. When mutations succeed, the state
+/// is updated directly without refetching the entire list.
+class UserBloc extends Bloc<UserEvent, UserState> {
+  UserBloc({required UserRepository repository})
+      : _repository = repository,
+        super(const UserInitial()) {
+    on<FetchUsers>(_onFetchUsers);
+    on<CreateUser>(_onCreateUser);
+  }
+
+  final UserRepository _repository;
+
+  Future<void> _onFetchUsers(
+    FetchUsers event,
+    Emitter<UserState> emit,
+  ) async {
+    emit(const UserLoading());
+    final result = await _repository.getUserList();
+
+    switch (result) {
+      case Ok<List<User>>():
+        // Emit Empty state for better UX when list is empty
+        if (result.value.isEmpty) {
+          emit(const UserEmpty());
+        } else {
+          emit(UserLoaded(users: result.value));
+        }
+      case Error<List<User>>():
+        emit(UserError(message: result.error.toString()));
+    }
+  }
+
+  Future<void> _onCreateUser(
+    CreateUser event,
+    Emitter<UserState> emit,
+  ) async {
+    final currentState = state;
+    emit(const UserLoading());
+
+    final result = await _repository.createUser(event.user);
+
+    switch (result) {
+      case Ok<User>():
+        // Optimistic update: add to existing list instead of refetching
+        if (currentState is UserLoaded) {
+          final updatedUsers = [...currentState.users, result.value];
+          emit(UserLoaded(users: updatedUsers));
+        } else {
+          add(const FetchUsers());
+        }
+      case Error<User>():
+        emit(UserError(message: result.error.toString()));
+    }
+  }
+}
+```
+
+**❌ BAD - Documenting Implementation Details:**
+
+```dart
+/// Widget displayed when no users are available.
+class UserListEmpty extends StatelessWidget {
+  const UserListEmpty({super.key});
+
+  /// Builds the empty state widget.
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Icon widget for visual indication
+          Icon(
+            Icons.people_outline,
+            size: 80,
+            color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          // Title text
+          Text(
+            'No users found',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+**✅ GOOD - Only Document the Widget Purpose:**
+
+```dart
+/// Empty state displayed when the user list is empty.
+class UserListEmpty extends StatelessWidget {
+  const UserListEmpty({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.people_outline,
+            size: 80,
+            color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No users found',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'There are no users to display',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).textTheme.bodySmall?.color,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+#### Inline Comments
+
+Use inline comments (`//`) sparingly, only for:
+
+1. **Explaining Why, Not What**
+   ```dart
+   // ✅ GOOD - Explains reasoning
+   // Use noContent or ok status for delete operations per REST spec
+   if (response.statusCode != HttpStatus.noContent &&
+       response.statusCode != HttpStatus.ok) {
+     throw Exception();
+   }
+
+   // ❌ BAD - States the obvious
+   // Check if status code is ok
+   if (response.statusCode != HttpStatus.ok) {
+     throw Exception();
+   }
+   ```
+
+2. **Complex Business Logic**
+   ```dart
+   // ✅ GOOD - Clarifies non-obvious behavior
+   // Optimistic update: add to existing list instead of refetching
+   // to avoid showing loading spinner for better UX
+   if (currentState is UserLoaded) {
+     final updatedUsers = [...currentState.users, result.value];
+     emit(UserLoaded(users: updatedUsers));
+   }
+   ```
+
+3. **Temporary Workarounds**
+   ```dart
+   // ✅ GOOD - Documents a workaround
+   // TODO: Remove when https://github.com/flutter/flutter/issues/12345 is fixed
+   // Workaround for iOS keyboard dismissal bug
+   FocusScope.of(context).unfocus();
+   await Future.delayed(const Duration(milliseconds: 100));
+   ```
+
+#### Summary
+
+**Golden Rule:** If someone reading your code would think "why?" or "what's the context?", add a comment. If they would think "obviously" or "I can see that from the code", don't add a comment.
+
+**Quality over Quantity:** One well-written comment explaining a design decision is worth more than 20 comments restating method names.
+
 ## Accessibility (A11Y)
 Implement accessibility features to empower all users, assuming a wide variety
 of users with different physical abilities, mental abilities, age groups,
@@ -1096,3 +1427,486 @@ education levels, and learning styles.
   labels for UI elements.
 * **Screen Reader Testing:** Regularly test your app with TalkBack (Android) and
   VoiceOver (iOS).
+
+## Creating a New Feature: Step-by-Step Guide
+
+This section provides practical guidance based on actual feature implementation in this project.
+
+### Feature Creation Checklist
+
+Use this checklist when creating a new feature:
+
+- [ ] Create feature directory structure (`data/`, `presentation/`, `widgets/`)
+- [ ] Create `pubspec.yaml` with workspace resolution
+- [ ] Define Freezed model with `abstract class` and proper imports
+- [ ] Implement API with `dart:io` import for HttpStatus
+- [ ] Create Repository abstraction and implementation
+- [ ] Define sealed event and state classes as `part` files
+- [ ] Implement BLoC with proper event handlers
+- [ ] Create Page (BLoC lifecycle) and View (UI rendering)
+- [ ] Create feature-specific widgets (empty, loading, error, list)
+- [ ] Create Module with DI registration and routes
+- [ ] Add feature to workspace (`pubspec.yaml` root)
+- [ ] Add feature to app dependencies (`packages/app/pubspec.yaml`)
+- [ ] Register module in ServiceLocator
+- [ ] Run `flutter pub get` and `dart run build_runner build`
+- [ ] Run `flutter analyze` to verify no errors
+
+### Common Patterns and Examples
+
+#### 1. Freezed Model Pattern
+
+```dart
+import 'package:core/core.dart';
+
+part 'user.freezed.dart';
+part 'user.g.dart';
+
+@freezed
+abstract class User with _$User {
+  const factory User({
+    required String id,
+    required String name,
+    required String email,
+    String? avatarUrl,  // Optional fields use nullable types
+  }) = _User;
+
+  factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
+}
+```
+
+**Key Points:**
+- Use `abstract class` (not just `class`)
+- Import from `package:core/core.dart` for Freezed annotations
+- Use `part` directives for generated files
+- Optional fields should be nullable
+
+#### 2. API Implementation Pattern
+
+```dart
+import 'dart:io';  // REQUIRED for HttpStatus
+import 'package:core/core.dart';
+import 'package:user/data/models/user.dart';
+
+abstract class UserApi {
+  Future<Result<List<User>>> getUserList();
+  Future<Result<User>> createUser(User user);
+  Future<Result<User>> updateUser(User user);
+  Future<Result<void>> deleteUser(String id);
+}
+
+class UserApiImpl implements UserApi {
+  UserApiImpl({HttpClient? httpClient})
+      : _httpClient = httpClient ?? GetIt.I.get<HttpClient>();
+
+  final HttpClient _httpClient;
+
+  @override
+  Future<Result<List<User>>> getUserList() async {
+    try {
+      final response = await _httpClient.get('/users');
+
+      // Always check status codes
+      if (response.statusCode != HttpStatus.ok) throw Exception();
+
+      final list = response.data as List<dynamic>;
+      final users = list.map((json) => User.fromJson(json)).toList();
+      return Result.ok(users);
+    } catch (e) {
+      return Result.error(Exception(e));
+    }
+  }
+
+  @override
+  Future<Result<User>> createUser(User user) async {
+    try {
+      final response = await _httpClient.post('/users', user.toJson());
+
+      // Use appropriate status code for each operation
+      if (response.statusCode != HttpStatus.created) throw Exception();
+
+      final createdUser = User.fromJson(response.data);
+      return Result.ok(createdUser);
+    } catch (e) {
+      return Result.error(Exception(e));
+    }
+  }
+
+  @override
+  Future<Result<void>> deleteUser(String id) async {
+    try {
+      final response = await _httpClient.delete('/users/$id');
+
+      // Delete can return 204 (noContent) or 200 (ok)
+      if (response.statusCode != HttpStatus.noContent &&
+          response.statusCode != HttpStatus.ok) {
+        throw Exception();
+      }
+
+      return const Result.ok(null);
+    } catch (e) {
+      return Result.error(Exception(e));
+    }
+  }
+}
+```
+
+**Key Points:**
+- Always import `dart:io` for `HttpStatus` constants
+- Check status codes explicitly (don't rely on exceptions)
+- Use appropriate status codes: `ok` (200), `created` (201), `noContent` (204)
+- Return `Result<void>` for delete operations
+- Wrap errors in `Exception(e)` for consistency
+
+#### 3. BLoC Pattern with State Updates
+
+```dart
+import 'package:core/core.dart';
+import 'package:user/data/models/user.dart';
+import 'package:user/data/repositories/user_repository.dart';
+
+part 'user_event.dart';
+part 'user_state.dart';
+
+class UserBloc extends Bloc<UserEvent, UserState> {
+  UserBloc({required UserRepository repository})
+      : _repository = repository,
+        super(const UserInitial()) {
+    on<FetchUsers>(_onFetchUsers);
+    on<CreateUser>(_onCreateUser);
+    on<DeleteUser>(_onDeleteUser);
+  }
+
+  final UserRepository _repository;
+
+  Future<void> _onFetchUsers(
+    FetchUsers event,
+    Emitter<UserState> emit,
+  ) async {
+    emit(const UserLoading());
+    final result = await _repository.getUserList();
+
+    switch (result) {
+      case Ok<List<User>>():
+        if (result.value.isEmpty) {
+          emit(const UserEmpty());  // Handle empty state explicitly
+        } else {
+          emit(UserLoaded(users: result.value));
+        }
+      case Error<List<User>>():
+        emit(UserError(message: result.error.toString()));
+    }
+  }
+
+  Future<void> _onCreateUser(
+    CreateUser event,
+    Emitter<UserState> emit,
+  ) async {
+    final currentState = state;  // Save current state
+    emit(const UserLoading());
+
+    final result = await _repository.createUser(event.user);
+
+    switch (result) {
+      case Ok<User>():
+        AppLogger.info('UserBloc', 'User created: ${result.value.id}');
+
+        // Optimistic update: add to existing list
+        if (currentState is UserLoaded) {
+          final updatedUsers = [...currentState.users, result.value];
+          emit(UserLoaded(users: updatedUsers));
+        } else {
+          add(const FetchUsers());  // Refetch if state unclear
+        }
+      case Error<User>():
+        emit(UserError(message: result.error.toString()));
+    }
+  }
+
+  Future<void> _onDeleteUser(
+    DeleteUser event,
+    Emitter<UserState> emit,
+  ) async {
+    final currentState = state;
+    emit(const UserLoading());
+
+    final result = await _repository.deleteUser(event.id);
+
+    switch (result) {
+      case Ok<void>():
+        AppLogger.info('UserBloc', 'User deleted: ${event.id}');
+
+        // Remove from existing list
+        if (currentState is UserLoaded) {
+          final updatedUsers =
+              currentState.users.where((user) => user.id != event.id).toList();
+
+          // Emit empty state if list becomes empty
+          if (updatedUsers.isEmpty) {
+            emit(const UserEmpty());
+          } else {
+            emit(UserLoaded(users: updatedUsers));
+          }
+        } else {
+          add(const FetchUsers());
+        }
+      case Error<void>():
+        emit(UserError(message: result.error.toString()));
+    }
+  }
+}
+```
+
+**Key Points:**
+- Save current state before emitting loading for optimistic updates
+- Handle empty list with dedicated `Empty` state
+- Use `AppLogger` for debugging (not `print`)
+- Implement optimistic updates for better UX
+- Refetch data if current state is unclear
+
+#### 4. Page/View Separation Pattern
+
+```dart
+// Page - Manages BLoC lifecycle
+class UserListPage extends StatefulWidget {
+  const UserListPage({super.key});
+  static const String path = '/user_list';
+
+  @override
+  State<UserListPage> createState() => _UserListPageState();
+}
+
+class _UserListPageState extends State<UserListPage> {
+  late UserBloc _viewModel;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _viewModel = GetIt.I.get<UserBloc>();  // Get from DI
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return UserListView(viewModel: _viewModel);  // Pass to view
+  }
+}
+
+// View - Renders UI and handles user interaction
+class UserListView extends StatefulWidget {
+  const UserListView({required this.viewModel, super.key});
+  final UserBloc viewModel;
+
+  @override
+  State<UserListView> createState() => _UserListViewState();
+}
+
+class _UserListViewState extends State<UserListView> {
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.add(const FetchUsers());  // Initial fetch
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Users')),
+      body: BlocBuilder<UserBloc, UserState>(
+        bloc: widget.viewModel,
+        builder: (context, state) {
+          return switch (state) {
+            UserInitial() => const Center(child: Text('Welcome!')),
+            UserLoading() => const UserListShimmer(),
+            UserEmpty() => const UserListEmpty(),
+            UserLoaded() => UserListList(users: state.users),
+            UserError() => UserListRetry(
+                message: state.message,
+                onRetry: () => widget.viewModel.add(const FetchUsers()),
+              ),
+          };
+        },
+      ),
+    );
+  }
+}
+```
+
+**Key Points:**
+- Page retrieves BLoC in `didChangeDependencies()` (not `initState()`)
+- View receives BLoC as constructor parameter
+- Use `switch` expressions with sealed classes for exhaustive matching
+- Create separate widgets for each state (empty, loading, error, loaded)
+
+#### 5. Module Registration Pattern
+
+```dart
+import 'package:core/core.dart';
+import 'package:flutter/material.dart';
+import 'package:user/data/repositories/user_repository.dart';
+import 'package:user/data/sources/user_api.dart';
+import 'package:user/presentation/view/user_list_page.dart';
+import 'package:user/presentation/view_model/user_bloc.dart';
+
+class UserModule extends Module {
+  @override
+  Future<void> registerDependencies({
+    required GetIt getIt,
+    required AppConfig appConfig,
+  }) async {
+    AppLogger.info('UserModule', 'Registering Dependencies');
+
+    // APIs and Repositories: registerLazySingleton
+    GetIt.I.registerLazySingleton<UserApi>(() => UserApiImpl());
+
+    GetIt.I.registerLazySingleton<UserRepository>(
+      () => UserRepositoryImpl(userApi: GetIt.I.get<UserApi>()),
+    );
+
+    // BLoCs: registerFactory (new instance each time)
+    GetIt.I.registerFactory<UserBloc>(
+      () => UserBloc(repository: GetIt.I.get<UserRepository>()),
+    );
+  }
+
+  @override
+  List<GoRoute> get routes => [
+        GoRoute(
+          path: UserListPage.path,
+          pageBuilder: (context, state) => const MaterialPage(
+            child: UserListPage(),
+          ),
+        ),
+      ];
+}
+```
+
+**Key Points:**
+- Use `registerLazySingleton` for APIs and Repositories
+- Use `registerFactory` for BLoCs (important for proper lifecycle)
+- Always log module initialization with `AppLogger`
+- Define routes using page path constants
+- Use `MaterialPage` for proper page transitions
+
+### Common Gotchas and Solutions
+
+#### 1. Import Issues
+
+**Problem:** Using `flutter_bloc` or `go_router` directly
+```dart
+// ❌ DON'T
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+```
+
+**Solution:** Import from core package
+```dart
+// ✅ DO
+import 'package:core/core.dart';
+```
+
+#### 2. HttpStatus Not Found
+
+**Problem:** `HttpStatus` constants are undefined
+```dart
+// ❌ Missing import
+if (response.statusCode != HttpStatus.ok) throw Exception();
+```
+
+**Solution:** Import dart:io
+```dart
+// ✅ Add import
+import 'dart:io';
+
+if (response.statusCode != HttpStatus.ok) throw Exception();
+```
+
+#### 3. Deprecated API Usage
+
+**Problem:** Using old Flutter APIs
+```dart
+// ❌ Deprecated
+color: Colors.blue.withOpacity(0.5)
+```
+
+**Solution:** Use new API
+```dart
+// ✅ Current
+color: Colors.blue.withValues(alpha: 0.5)
+```
+
+#### 4. json_annotation Dependency
+
+**Problem:** Build runner warns about missing `json_annotation`
+```yaml
+# ❌ Only in dev_dependencies
+dev_dependencies:
+  json_annotation: ^4.9.0
+```
+
+**Solution:** Add to main dependencies
+```yaml
+# ✅ In dependencies
+dependencies:
+  json_annotation: ^4.9.0
+```
+
+#### 5. BLoC Registration
+
+**Problem:** BLoC persists between navigations
+```dart
+// ❌ Wrong registration
+GetIt.I.registerLazySingleton<UserBloc>(...);
+```
+
+**Solution:** Use factory registration
+```dart
+// ✅ Correct registration
+GetIt.I.registerFactory<UserBloc>(...);
+```
+
+### Testing Your Feature
+
+After creating a feature, verify it works:
+
+```bash
+# 1. Get dependencies
+flutter pub get
+
+# 2. Generate code
+cd features/your_feature
+dart run build_runner build --delete-conflicting-outputs
+
+# 3. Analyze code
+cd ../..
+flutter analyze
+
+# 4. Run tests (if available)
+flutter test
+
+# 5. Run the app
+./scripts/run_dev.sh
+```
+
+### Real-World Examples in Codebase
+
+Study these complete implementations:
+
+1. **Post Feature** (`features/post/`)
+   - Full CRUD operations
+   - Modal dialogs for create/update/delete
+   - Shimmer loading states
+   - Empty and error states
+
+2. **User Feature** (`features/user/`)
+   - List with search functionality
+   - Debounced search input
+   - Avatar display with fallbacks
+   - Popup menu for actions
+   - All state variations
+
+Both features demonstrate:
+- Complete data layer (model, API, repository)
+- Full BLoC implementation (events, states, handlers)
+- Comprehensive UI (page, view, widgets)
+- Module setup (DI and routing)
+- Error handling and loading states
