@@ -8,10 +8,11 @@ A production-ready Flutter project template built with multi-package workspace a
 ## 🌟 Features
 
 ### Architecture & Organization
-- **Multi-Package Workspace:** Organized into `app`, `core`, `design_system`, `localization`, and `post` packages for clear separation of concerns
-- **Simple Architecture:** Implements layered architecture with data and presentation layers
-- **State Management:** BLoC pattern with `flutter_bloc` for reactive state management
-- **Dependency Injection:** Service locator pattern using `get_it`
+- **Multi-Package Workspace:** Organized into `app`, `core`, `design_system`, `localization`, and feature packages for clear separation of concerns
+- **Clean Architecture:** Implements layered architecture with presentation, domain, and data layers
+- **State Management:** BLoC pattern with abstract classes and Equatable for type-safe state management
+- **Dependency Injection:** Module-based dependency injection using GetIt service locator
+- **Result Pattern:** Type-safe error handling with sealed Result<T> class and pattern matching
 
 ### Development Experience
 - **Environment Support:** Development, staging, and production configurations with flavor-specific settings
@@ -163,12 +164,263 @@ flutter_template/
     │   │   ├── generated/           # Generated localization code
     │   │   └── localization.dart    # Main package export
     │   └── pubspec.yaml
-    └── post/                        # Post feature implementation
+└── features/
+    └── post/                        # Post feature module
         ├── lib/
-        │   ├── data/                # Data layer (APIs, models, repositories)
-        │   ├── presentation/        # Presentation layer (viewmodels, views, widgets)
-        │   └── post.dart            # Main package export
+        │   ├── data/
+        │   │   ├── models/          # Data models with freezed & json_serializable
+        │   │   ├── repositories/    # Repository implementations
+        │   │   └── sources/         # API data sources (PostApi, PostApiImpl)
+        │   ├── presentation/
+        │   │   ├── view/            # Pages and Views
+        │   │   ├── view_model/      # BLoC (post_bloc.dart, post_event.dart, post_state.dart)
+        │   │   └── widgets/         # Feature-specific widgets and modals
+        │   └── post_module.dart     # Module registration (dependencies & routes)
         └── pubspec.yaml
+```
+
+## 🏗️ Architecture Patterns
+
+### BLoC Pattern
+
+This project uses **abstract classes extending Equatable** for BLoC events and states (not sealed classes or freezed).
+
+#### Events
+```dart
+abstract class PostEvent extends Equatable {
+  const PostEvent();
+  @override
+  List<Object> get props => [];
+}
+
+class FetchPosts extends PostEvent {
+  final String? query;
+  const FetchPosts({this.query});
+  @override
+  List<Object> get props => query != null ? [query!] : [];
+}
+```
+
+#### States
+```dart
+abstract class PostState extends Equatable {
+  const PostState();
+  @override
+  List<Object> get props => [];
+}
+
+class PostInitial extends PostState {}
+class PostLoading extends PostState {}
+class PostLoaded extends PostState {
+  final List<Post> posts;
+  const PostLoaded(this.posts);
+  @override
+  List<Object> get props => [posts];
+}
+class PostError extends PostState {
+  final String message;
+  const PostError(this.message);
+  @override
+  List<Object> get props => [message];
+}
+```
+
+#### BLoC Implementation
+```dart
+class PostBloc extends Bloc<PostEvent, PostState> {
+  final PostRepository _postRepository;
+
+  PostBloc({required PostRepository postRepository})
+      : _postRepository = postRepository,
+        super(PostInitial()) {
+    on<FetchPosts>(_onFetchPosts);
+  }
+
+  Future<void> _onFetchPosts(FetchPosts event, Emitter<PostState> emit) async {
+    emit(PostLoading());
+    final result = await _postRepository.getPostsList();
+
+    switch (result) {
+      case Ok<List<Post>>():
+        emit(PostLoaded(result.value));
+      case Error<List<Post>>():
+        emit(PostError(result.error.toString()));
+    }
+  }
+}
+```
+
+### Result Pattern
+
+Type-safe error handling using sealed class with pattern matching:
+
+```dart
+// Usage in repositories/APIs
+Future<Result<List<Post>>> getPostsList() async {
+  try {
+    final response = await _httpClient.get('/posts');
+    final posts = (response.data as List).map((json) => Post.fromJson(json)).toList();
+    return Result.ok(posts);
+  } catch (e) {
+    return Result.error(Exception('Failed to fetch posts: $e'));
+  }
+}
+
+// Pattern matching in BLoC
+final result = await _postRepository.getPostsList();
+switch (result) {
+  case Ok<List<Post>>():
+    emit(PostLoaded(result.value));
+  case Error<List<Post>>():
+    emit(PostError(result.error.toString()));
+}
+```
+
+### Module Pattern
+
+Each feature is a self-contained module that registers dependencies and routes:
+
+```dart
+class PostModule extends Module {
+  @override
+  Future<void> registerDependencies({
+    required GetIt getIt,
+    required AppConfig appConfig,
+  }) async {
+    // Sources - lazy singleton
+    GetIt.I.registerLazySingleton<PostApi>(() {
+      return PostApiImpl(httpClient: DioHttpClient(baseUrl: 'http://10.0.2.2:8080'));
+    });
+
+    // Repositories - lazy singleton
+    GetIt.I.registerLazySingleton<PostRepository>(() {
+      return PostRepositoryImpl(postApi: GetIt.I.get<PostApi>());
+    });
+
+    // BLoCs - factory (new instance each time)
+    GetIt.I.registerFactory<PostBloc>(() {
+      return PostBloc(postRepository: GetIt.I.get<PostRepository>());
+    });
+  }
+
+  @override
+  List<GoRoute> get routes => [
+    GoRoute(
+      path: PostListPage.path,
+      pageBuilder: (context, state) => MaterialPage(child: PostListPage()),
+    ),
+  ];
+}
+```
+
+### Page/View Separation
+
+**Page** manages BLoC lifecycle, **View** renders UI:
+
+```dart
+// Page - manages BLoC
+class PostListPage extends StatefulWidget {
+  static const path = '/post_list';
+  const PostListPage({super.key});
+
+  @override
+  State<PostListPage> createState() => _PostListPageState();
+}
+
+class _PostListPageState extends State<PostListPage> {
+  late final PostBloc _viewModel;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _viewModel = GetIt.I<PostBloc>();
+  }
+
+  @override
+  void dispose() {
+    _viewModel.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PostListView(viewModel: _viewModel);
+  }
+}
+
+// View - renders UI
+class PostListView extends StatefulWidget {
+  final PostBloc viewModel;
+  const PostListView({super.key, required this.viewModel});
+
+  @override
+  State<PostListView> createState() => _PostListViewState();
+}
+
+class _PostListViewState extends State<PostListView> {
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.add(const FetchPosts());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocBuilder<PostBloc, PostState>(
+        bloc: widget.viewModel,
+        builder: (context, state) {
+          return switch (state) {
+            PostInitial() => const PostListEmpty(),
+            PostLoading() => const PostListShimmer(),
+            PostLoaded() => PostListList(posts: state.posts),
+            PostError() => PostListRetry(
+                onRetry: () => context.read<PostBloc>().add(const FetchPosts()),
+              ),
+            _ => const SizedBox.shrink(),
+          };
+        },
+      ),
+    );
+  }
+}
+```
+
+### Repository Pattern
+
+Abstract interface with implementation:
+
+```dart
+// Abstract repository
+abstract class PostRepository {
+  Future<Result<List<Post>>> getPostsList();
+  Future<Result<Post>> getPost(String id);
+}
+
+// Implementation
+class PostRepositoryImpl implements PostRepository {
+  final PostApi _postApi;
+
+  PostRepositoryImpl({required PostApi postApi}) : _postApi = postApi;
+
+  @override
+  Future<Result<List<Post>>> getPostsList() async {
+    return await _postApi.getPostsList();
+  }
+}
+```
+
+### Localization
+
+Use the `context.l10n` extension method:
+
+```dart
+// Correct usage
+Text(context.l10n.appTitle)
+AppBar(title: Text(context.l10n.posts))
+
+// Don't use
+AppLocalizations.of(context)!.appTitle
 ```
 
 ## 🧪 Testing
@@ -240,11 +492,30 @@ The project supports multiple languages with centralized translation management:
 - **Type Safety:** Strict type checking and null safety
 - **Error Handling:** Custom Result pattern for type-safe error management
 
+## 🤖 AI Development Rules
+
+AI development rules are available in the `.ai/` directory to help AI assistants understand the project architecture and maintain code consistency:
+
+- **`.ai/FLUTTER.md`** - Shared Flutter development rules
+- **`.ai/CLAUDE.md`** - Symlink to FLUTTER.md (for Anthropic's Claude)
+- **`.ai/GEMINI.md`** - Symlink to FLUTTER.md (for Google's Gemini)
+- **`.ai/COPILOT.md`** - Rules for GitHub Copilot
+- **`.ai/CHATGPT.md`** - Rules for OpenAI's ChatGPT
+
+These files contain comprehensive guidelines on:
+- Architecture patterns and project structure
+- Code style and naming conventions
+- State management with BLoC
+- Testing requirements and coverage expectations
+- Development workflow and best practices
+
+**For AI assistants:** Please read the appropriate rules file from `.ai/` directory before starting development work.
+
 ## 📚 Additional Resources
 
-- **CLAUDE.md** - Detailed technical documentation and architecture guide
 - **Widgetbook** - Interactive component library at `./scripts/run_widgetbook.sh`
 - **Package Documentation** - Each package contains detailed README files
+- **AI Development Rules** - See `.ai/` directory for AI assistant guidelines
 
 ## 📄 License
 

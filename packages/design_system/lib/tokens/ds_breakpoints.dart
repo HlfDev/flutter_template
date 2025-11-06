@@ -6,12 +6,12 @@ abstract class DSBreakpoints {
   static const double desktop = 1200;
 
   static bool isMobile(BuildContext context) =>
-      MediaQuery.of(context).size.width < mobile;
+      MediaQuery.sizeOf(context).width < mobile;
 
   static bool isTablet(BuildContext context) =>
-      MediaQuery.of(context).size.width >= mobile &&
-      MediaQuery.of(context).size.width < desktop;
+      MediaQuery.sizeOf(context).width >= mobile &&
+      MediaQuery.sizeOf(context).width < desktop;
 
   static bool isDesktop(BuildContext context) =>
-      MediaQuery.of(context).size.width >= desktop;
+      MediaQuery.sizeOf(context).width >= desktop;
 }
